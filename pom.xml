@@ -5,5 +5,14 @@
   <version>0.0.1-SNAPSHOT</version>
   <packaging>war</packaging>
   <name>Mobile Education</name>
-  <description>SMS App to msg tops to registered students</description>
+  <description>SMS App to msg tips to registered students</description>
+
+  <plugin>
+  <groupId>org.apache.maven.plugins</groupId>
+  <artifactId>maven-war-plugin</artifactId>
+  <configuration>
+    <webXml>src\main\webapp\WEB-INF\web.xml</webXml>
+  </configuration>
+  </plugin>
+
 </project>
