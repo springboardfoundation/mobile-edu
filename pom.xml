@@ -1,4 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.freesource.education</groupId>
   <artifactId>MobileEdu</artifactId>
@@ -7,12 +8,17 @@
   <name>Mobile Education</name>
   <description>SMS App to msg tips to registered students</description>
 
-  <plugin>
-  <groupId>org.apache.maven.plugins</groupId>
-  <artifactId>maven-war-plugin</artifactId>
-  <configuration>
-    <webXml>src\main\webapp\WEB-INF\web.xml</webXml>
-  </configuration>
-  </plugin>
+  <build>
+	  <sourceDirectory>src</sourceDirectory>
+	  <plugins>
+		  <plugin>
+			  <groupId>org.apache.maven.plugins</groupId>
+			  <artifactId>maven-war-plugin</artifactId>
+			  <configuration>
+			  <webXml>src\main\webapp\WEB-INF\web.xml</webXml>
+			  </configuration>
+		  </plugin>
+	  </plugins>
+  </build>
 
 </project>
