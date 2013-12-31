@@ -20,8 +20,8 @@
     <p>Am still under construction. Please wait till the work is complete </p>
     <p>Please visit the following links, if they are working:
     <ul>
-      <li>To a <a href="index.jsp">JSP page</a>.
-      <li>To a <a href="/HelloWorld">servlet</a>.
+      <li>To a <a href="hello.jsp">JSP page</a>.
+      <li>To a <a href="hello">servlet</a>.
     </ul>
 </body>
 </html>
