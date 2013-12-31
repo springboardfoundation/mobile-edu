@@ -54,6 +54,7 @@ public class HelloWorld extends HttpServlet {
 		context.setContextPath("/");
 		server.setHandler(context);
 		context.addServlet(new ServletHolder(new HelloWorld()), "/HelloWorld");
+		context.addServlet(new ServletHolder(new MyMessage()), "/*");
 		server.start();
 		server.join();
 	}
