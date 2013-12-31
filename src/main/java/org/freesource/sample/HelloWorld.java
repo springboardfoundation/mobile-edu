@@ -4,12 +4,17 @@
 package org.freesource.sample;
 
 //Import required java libraries
-import java.io.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
+import java.io.IOException;
+import java.io.PrintWriter;
+
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.servlet.*;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
 
 /**
  * @author Reehan
@@ -40,13 +45,16 @@ public class HelloWorld extends HttpServlet {
 		// do nothing.
 	}
 
-	public static void main(String[] args) throws Exception{
-        Server server = new Server(Integer.valueOf(System.getenv("PORT")));
-        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        context.setContextPath("/");
-        server.setHandler(context);
-        context.addServlet(new ServletHolder(new HelloWorld()),"/*");
-        server.start();
-        server.join();
-    }
+	public static void main(String[] args) throws Exception {
+		System.out.println("Am the main class, please find me!");
+		Server server = new Server(Integer.valueOf(System.getenv("PORT"))
+				.intValue());
+		ServletContextHandler context = new ServletContextHandler(
+				ServletContextHandler.SESSIONS);
+		context.setContextPath("/");
+		server.setHandler(context);
+		context.addServlet(new ServletHolder(new HelloWorld()), "/*");
+		server.start();
+		server.join();
+	}
 }
