@@ -4,9 +4,11 @@
 package org.freesource.sample;
 
 //Import required java libraries
-import java.io.*;
-import javax.servlet.*;
+import java.io.IOException;
+import javax.servlet.ServletException;
 import javax.servlet.http.*;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.*;
 
 /**
  * @author Reehan
