@@ -1,1 +1,1 @@
-web:   java -cp target/classes:lib/* org.freesource.sample.HelloWorld
+web:   java -cp target/classes:target/dependency/* org.freesource.sample.HelloWorld
