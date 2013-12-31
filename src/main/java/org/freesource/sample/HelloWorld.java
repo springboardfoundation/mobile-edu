@@ -53,7 +53,7 @@ public class HelloWorld extends HttpServlet {
 				ServletContextHandler.SESSIONS);
 		context.setContextPath("/");
 		server.setHandler(context);
-		context.addServlet(new ServletHolder(new HelloWorld()), "/*");
+		context.addServlet(new ServletHolder(new HelloWorld()), "/HelloWorld");
 		server.start();
 		server.join();
 	}
