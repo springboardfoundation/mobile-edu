@@ -1,1 +1,1 @@
-web:   java -cp target/classes:target/dependency/* org.freesource.sample.HelloWorld
+web: sh target/bin/webapp
