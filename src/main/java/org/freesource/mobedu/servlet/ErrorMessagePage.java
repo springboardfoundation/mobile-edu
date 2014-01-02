@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.freesource.mobedu.services;
+package org.freesource.mobedu.servlet;
 
 //Import required java libraries
 import java.io.IOException;
@@ -13,18 +13,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * @author Reehan
- * 
- * @WebServlet( name = "MyServlet", urlPatterns = {"/hello"} )
+ * Display error page for any error display.
+ * One can use a send-redirect to /error that has been mapped to this servlet
  */
-public class UnderConstructionMessage extends HttpServlet {
+public class ErrorMessagePage extends HttpServlet {
 
 	private static final long serialVersionUID = -4746779576591177425L;
-	private String message;
 
 	public void init() throws ServletException {
 		// Do required initialization
-		message = "This website is still under construction";
 	}
 
 	private void writeMessage(PrintWriter out) {
@@ -69,10 +66,9 @@ public class UnderConstructionMessage extends HttpServlet {
 		// Actual logic goes here.
 		PrintWriter out = response.getWriter();
 		writeMessage(out);
-		// out.println("<h1>" + message + "</h1>");
 	}
 
 	public void destroy() {
-		// do nothing.
+		// Do required object destructions
 	}
 }

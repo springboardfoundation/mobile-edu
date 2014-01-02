@@ -1,0 +1,8 @@
+<!-- Example of a sample error response from the Location Service API-->
+<?xml version="1.0">
+<txtWeb>
+	<status>
+		<code>-101</code>
+		<message>No such mobile</message>
+	</status>
+</txtWeb>
