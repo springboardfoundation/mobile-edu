@@ -1,5 +1,5 @@
 /*
- * Copyleft© Engineers for Society, FreeSource.org, All rights unreserved.
+ * Copyleft Engineers for Society, FreeSource.org, All rights unreserved.
  *
  * This is unpublished proprietary source code of FreeSource
  * The copyright notice does not evidence any actual or intended publication of such
