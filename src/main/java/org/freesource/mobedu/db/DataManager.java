@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.freesource.mobedu.dao;
+package org.freesource.mobedu.db;
 
 /**
  * The DB handler class that has to save, retrieve db entities as required. This
