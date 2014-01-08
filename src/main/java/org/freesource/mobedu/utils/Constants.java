@@ -11,9 +11,13 @@ public interface Constants {
 	// Logger for logging
 	Logger log = Logger.getInstance("Mobile Education");
 	int TENTH = 10;
+	String TENTH_CLASS = "10th";
 
 	String APPKEY_NAME = "txtweb-appkey";
-	String APPKEY_CONTENT = "42c5f773-6bd7-47f7-81cc-3a9dd4367683";
+	// String APPKEY_CONTENT = "42c5f773-6bd7-47f7-81cc-3a9dd4367683";
+	String SERVICE_APP_KEY = "54990a4f-0fd6-464b-afd1-569ff15edb13";
+	String PUBLISHER_ID = "cdb77a61-2ca0-456e-a498-f9deea9d9632";
+
 
 	String LOCATION_API_URL = "http://api.txtweb.com/v1/location/get";
 

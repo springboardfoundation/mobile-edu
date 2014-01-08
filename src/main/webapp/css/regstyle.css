@@ -1,0 +1,32 @@
+a:link {
+	color: #046380;
+	text-decoration: underline;
+}
+
+a:visited {
+	color: #A7A37E;
+	text-decoration: none;
+}
+
+a:hover {
+	color: #002F2F;
+	text-decoration: underline;
+}
+
+a:active {
+	color: #046380;
+	text-decoration: none;
+}
+
+.list {
+	list-style: none;
+	margin: 5px 0 10px 5px;
+	padding: 0;
+}
+
+li.plus {
+	background-image: url(images/plus.gif);
+	background-repeat: no-repeat;
+	background-position: left;
+	padding: 5px 0px 0px 20px;
+}

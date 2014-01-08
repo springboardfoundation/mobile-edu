@@ -11,8 +11,7 @@ import java.util.TimeZone;
  * All methods here are for general utility purpose All methods in this class
  * have to be public static and final
  */
-public class Utilities {
-	private static final String TENTH_CLASS = "10th";
+public class Utilities implements Constants{
 	private static String classMsg = "";
 
 	public static final String getStdClass(int cl) {

@@ -33,15 +33,19 @@ public class RegistrationHandler extends HttpServlet implements Constants {
 	Users regUser;
 	String txtWebResponse = "";
 
-	public void doGet(HttpServletRequest req, HttpServletResponse resp)
+	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
 
 		// Get the Mobile number from the request parameters
-		String mobileHash = req.getParameter(HTTP_PARAM_TXTWEB_MOBILE);
+		String mobileHash = request.getParameter(HTTP_PARAM_TXTWEB_MOBILE);
+		// What if there is no mobile hash?
+		if(null == mobileHash){
+			response.sendRedirect("registerUser.html");
+		}
 		regUser.setMobileId(mobileHash);
 
 		// Get the message from the request parameter
-		String standard = req.getParameter(HTTP_PARAM_TXTWEB_MESSAGE);
+		String standard = request.getParameter(HTTP_PARAM_TXTWEB_MESSAGE);
 
 		// Get the correct string to be stored in DB for the String and also
 		// create the appropriate registration message to be sent back
