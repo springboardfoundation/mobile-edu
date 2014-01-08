@@ -10,6 +10,16 @@
     </description>
 
 	<servlet>
+		<servlet-name>NewUser</servlet-name>
+		<servlet-class>org.freesource.mobedu.servlet.RegistrationHandler</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>NewUser</servlet-name>
+		<url-pattern>/registerUser</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
 		<servlet-name>ErrorPage</servlet-name>
 		<servlet-class>org.freesource.mobedu.servlet.ErrorMessagePage</servlet-class>
 	</servlet>

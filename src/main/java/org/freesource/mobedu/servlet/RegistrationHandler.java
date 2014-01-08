@@ -4,13 +4,16 @@
 package org.freesource.mobedu.servlet;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.freesource.mobedu.dao.Users;
+import org.freesource.mobedu.db.DataManager;
 import org.freesource.mobedu.utils.Constants;
+import org.freesource.mobedu.utils.MobileEduException;
 import org.freesource.mobedu.utils.Utilities;
 
 /**
@@ -36,10 +39,10 @@ public class RegistrationHandler extends HttpServlet implements Constants {
 		// Get the Mobile number from the request parameters
 		String mobileHash = req.getParameter(HTTP_PARAM_TXTWEB_MOBILE);
 		regUser.setMobileId(mobileHash);
-		
+
 		// Get the message from the request parameter
 		String standard = req.getParameter(HTTP_PARAM_TXTWEB_MESSAGE);
-		
+
 		// Get the correct string to be stored in DB for the String and also
 		// create the appropriate registration message to be sent back
 		if (null == standard || 0 == standard.length()) {
@@ -50,6 +53,15 @@ public class RegistrationHandler extends HttpServlet implements Constants {
 		} else {
 			regUser.setRegStd(Utilities.getStdClass(standard));
 			txtWebResponse += Utilities.getStdReplyMessage();
+		}
+
+		try {
+			DataManager dm = new DataManager(DB4_TYPE);
+			dm.saveNewUser(regUser);
+		} catch (MobileEduException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 	}
 

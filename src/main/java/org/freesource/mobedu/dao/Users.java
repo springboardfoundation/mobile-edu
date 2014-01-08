@@ -1,20 +1,18 @@
 package org.freesource.mobedu.dao;
 
-import java.sql.Timestamp;
-
 /**
  * The main user class to store the attributes of a user
- *
+ * 
  */
 public class Users {
 
 	private int contextId;
 	private String mobileId;
 	private String regStd;
-	private Timestamp regDate;
+	private String regDate;
 	private boolean active;
 	private String location;
-	
+
 	public Users() {
 		// TODO Auto-generated constructor stub
 	}
@@ -27,7 +25,8 @@ public class Users {
 	}
 
 	/**
-	 * @param contextId the contextId to set
+	 * @param contextId
+	 *            the contextId to set
 	 */
 	void setContextId(int contextId) {
 		this.contextId = contextId;
@@ -41,7 +40,8 @@ public class Users {
 	}
 
 	/**
-	 * @param mobileId the mobileId to set
+	 * @param mobileId
+	 *            the mobileId to set
 	 */
 	public final void setMobileId(String mobileId) {
 		this.mobileId = mobileId;
@@ -55,7 +55,8 @@ public class Users {
 	}
 
 	/**
-	 * @param regStd the regStd to set
+	 * @param regStd
+	 *            the regStd to set
 	 */
 	public final void setRegStd(String regStd) {
 		this.regStd = regStd;
@@ -64,14 +65,15 @@ public class Users {
 	/**
 	 * @return the regDate
 	 */
-	public final Timestamp getRegDate() {
+	public final String getRegDate() {
 		return regDate;
 	}
 
 	/**
-	 * @param regDate the regDate to set
+	 * @param regDate
+	 *            the regDate to set
 	 */
-	final void setRegDate(Timestamp regDate) {
+	public final void setRegDate(String regDate) {
 		this.regDate = regDate;
 	}
 
@@ -93,7 +95,6 @@ public class Users {
 		this.active = false;
 	}
 
-
 	/**
 	 * @return the location
 	 */
@@ -102,7 +103,8 @@ public class Users {
 	}
 
 	/**
-	 * @param location the location to set
+	 * @param location
+	 *            the location to set
 	 */
 	public final void setLocation(String location) {
 		this.location = location;

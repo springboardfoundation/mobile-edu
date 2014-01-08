@@ -9,10 +9,8 @@ import java.io.File;
 import org.apache.catalina.startup.Tomcat;
 
 /**
- * @author Reehan
  * 
  */
-// Extend HttpServlet class
 public class AppStarterMain{
 
 	public static void main(String[] args) throws Exception {
