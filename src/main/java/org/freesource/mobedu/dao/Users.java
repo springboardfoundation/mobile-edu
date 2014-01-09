@@ -12,6 +12,7 @@ public class Users {
 	private String regDate;
 	private boolean active;
 	private String location;
+	private String protocol;
 
 	public Users() {
 		// TODO Auto-generated constructor stub
@@ -108,5 +109,19 @@ public class Users {
 	 */
 	public final void setLocation(String location) {
 		this.location = location;
+	}
+
+	/**
+	 * @return the protocol
+	 */
+	public String getProtocol() {
+		return protocol;
+	}
+
+	/**
+	 * @param protocol the protocol to set
+	 */
+	public void setProtocol(String protocol) {
+		this.protocol = protocol;
 	}
 }

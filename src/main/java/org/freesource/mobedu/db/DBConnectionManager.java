@@ -18,7 +18,7 @@ import org.freesource.mobedu.utils.MobileEduException;
  * needs to be written in such a way that any DB change will required a very
  * minimal change here
  */
-public class DataManager implements Constants {
+public class DBConnectionManager implements Constants {
 
 	private static final String DB_CONFIG_FILE = DB_PROP_FILE;
 	private static Properties dbProp = null;
@@ -31,7 +31,7 @@ public class DataManager implements Constants {
 	 * 
 	 * @throws MobileEduException
 	 */
-	public DataManager(String type) throws MobileEduException {
+	public DBConnectionManager(String type) throws MobileEduException {
 		if (type.equals(DB4_TYPE)) {
 			String dburi = getDB4_URI();
 			if (!connect(dburi, MYSQL_DRIVER_CLASS, getDBProperty(DB4_USER),
@@ -80,7 +80,7 @@ public class DataManager implements Constants {
 	private static void loadDBProperties() {
 		dbProp = new Properties();
 		try {
-			dbProp.load(DataManager.class.getClassLoader().getResourceAsStream(
+			dbProp.load(DBConnectionManager.class.getClassLoader().getResourceAsStream(
 					DB_CONFIG_FILE));
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -99,4 +99,11 @@ public class DataManager implements Constants {
 		return theDBA.saveUser(newUser);
 	}
 
+	protected void finalize() {
+		try {
+			conn.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 }
