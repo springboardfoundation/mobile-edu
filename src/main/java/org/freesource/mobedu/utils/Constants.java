@@ -25,13 +25,14 @@ public interface Constants {
 	String HTTP_PARAM_TXTWEB_MOBILE = "txtweb-mobile";
 	String HTTP_PARAM_TXTWEB_MESSAGE = "txtweb-message";
 	String HTTP_PARAM_TXTWEB_ID = "txtweb-id";
+	String HTTP_PARAM_TXTWEB_PROTOCOL = "txtweb-protocol";
 
 	String SUCCESS_CODE = "0";
 
 	String DB_TYPE = "db_type";
 
 	// Standard Error Message reply
-	String errorMessage = "Registration Failed, please try after sometime";
+	String DEFAULT_ERR_MSG = "Registration Failed, please try after sometime";
 
 	String DB4_TYPE = "db4free";
 	String DB4_NAME = "db4free.database";
@@ -48,5 +49,6 @@ public interface Constants {
 	 * DB query constants. Prefix with Q_ to mark as query
 	 */
 	String Q_MAX_CONTEXTID = "SELECT MAX(CONTEXT_ID) CONTEXT_ID FROM USER_CONTEXT";
-	String Q_INSERT_NEW_USER = "INSERT INTO USER_CONTEXT (CONTEXT_ID, MOBILE_HASH, REG_STD, REG_DATE, IS_ACTIVE, LOCATION) VALUES (?, ?, ?, ?, ?, ?)";
+	String Q_INSERT_NEW_USER = "INSERT INTO USER_CONTEXT (CONTEXT_ID, MOBILE_HASH, REG_STD, REG_DATE, IS_ACTIVE, LOCATION, PROTOCOL) VALUES (?, ?, ?, ?, ?, ?, ?)";
+	String Q_SELECT_USER_WITH_MOBILEHASH = "SELECT CONTEXT_ID, MOBILE_HASH, REG_STD, REG_DATE, IS_ACTIVE, LOCATION, PROTOCOL FROM USER_CONTEXT WHERE MOBILE_HASH = ";
 }

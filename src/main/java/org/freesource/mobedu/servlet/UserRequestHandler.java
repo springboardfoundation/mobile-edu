@@ -4,14 +4,13 @@
 package org.freesource.mobedu.servlet;
 
 import java.io.IOException;
-import java.sql.SQLException;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.freesource.mobedu.dao.Users;
-import org.freesource.mobedu.db.DBConnectionManager;
+import org.freesource.mobedu.services.UserHandlerService;
 import org.freesource.mobedu.utils.Constants;
 import org.freesource.mobedu.utils.MobileEduException;
 import org.freesource.mobedu.utils.ResponseMessageHandler;
@@ -29,72 +28,110 @@ public class UserRequestHandler extends HttpServlet implements Constants {
 	 */
 	public UserRequestHandler() {
 		regUser = new Users();
-		txtWebResponse = new StringBuffer();
 	}
 
 	Users regUser;
-	StringBuffer txtWebResponse;
+	HttpServletRequest request;
+	HttpServletResponse response;
 
-	public void doGet(HttpServletRequest request, HttpServletResponse response)
+	public void doGet(HttpServletRequest req, HttpServletResponse res)
 			throws IOException {
 
-		// Get the Mobile number from the request parameters
-		String mobileHash = request.getParameter(HTTP_PARAM_TXTWEB_MOBILE);
-		log.debug("Mobile Hash passed:" + mobileHash);
-		// What if there is no mobile hash?
-		if (null == mobileHash || mobileHash.isEmpty()) {
-			response.setContentType("text/html");
+		UserHandlerService useService;
+		try {
+			useService = new UserHandlerService(req);
+		} catch (MobileEduException e) {
+			e.printStackTrace();
 			ResponseMessageHandler.writeMessage(request, response,
-					"Application Registration Message");
+					DEFAULT_ERR_MSG);
 			return;
 		}
 
-		regUser.setMobileId(mobileHash);
+		// Assign to global variables so that other fucntions can use it
+		request = req;
+		response = res;
+		response.setContentType("text/html");
 
-		// Get the message from the request parameter
-		String standard = request.getParameter(HTTP_PARAM_TXTWEB_MESSAGE);
+		useService.populateUser(regUser);
+		// Buffer to contain the response to be sent back to the user
+		StringBuffer txtWebResponse = new StringBuffer();
 
-		// Get the correct string to be stored in DB for the standard
-		if (null == standard || 0 == standard.length()) {
-			// Default will be 10th Standard
-			txtWebResponse.append("No class given for registration. ");
-			regUser.setRegStd(Utilities.getStdClass(TENTH));
-			txtWebResponse.append(Utilities.getStdReplyMessage());
-		} else {
-			regUser.setRegStd(Utilities.getStdClass(standard));
-			txtWebResponse.append(Utilities.getStdReplyMessage());
+		// What if there is no mobile hash?
+		String mobileHash = request.getParameter(HTTP_PARAM_TXTWEB_MOBILE);
+		if (null == mobileHash || mobileHash.isEmpty()) {
+			respondToRegisterRequest();
+			return;
 		}
-		// If the Std is not set in the user object then the registration
-		// standard given is invalid. Print the message and write the respond to
-		// the user without continuing further
-		if (regUser.getRegStd().isEmpty()) {
+
+		if (useService.searchUser(mobileHash, regUser)) {
 			txtWebResponse
-					.append("Please select one from the given list:<br />"
-							+ LIST_OF_SUPPORTED_STD);
+					.append("You are already registered to this service for getting tips of:");
+			txtWebResponse.append(regUser.getRegStd());
+			txtWebResponse
+					.append("<br />To stop please SMS @sioguide stop to 92665 92665");
 			ResponseMessageHandler.writeMessage(request, response,
 					txtWebResponse.toString());
 			return;
 		}
+		String standard = request.getParameter(HTTP_PARAM_TXTWEB_MESSAGE);
+		// Get the correct string to be stored in DB for the standard
+		if (null == standard || 0 == standard.length()) {
+			// Default will be 10th Standard
+			txtWebResponse.append("No class given for registration. ");
+		}
+		txtWebResponse.append(Utilities.getStdReplyMessage());
+
+		// The user has requested to register to the std, check for its validity
+		if (regUser.getRegStd().isEmpty()) {
+			replyForValidStd(txtWebResponse);
+			return;
+		}
+		// Finally Save to the DB
+		String reply = useService.saveUserToDB(txtWebResponse, regUser);
+		ResponseMessageHandler.writeMessage(request, response, reply);
+	}
+
+	/**
+	 * If the Std is not set in the user object then the registration standard
+	 * given is invalid. Print the message and write the respond to the user
+	 * without continuing further
+	 * 
+	 * @param txtWebResponse
+	 * @throws IOException
+	 */
+	private void replyForValidStd(StringBuffer txtWebResponse)
+			throws IOException {
+
+		txtWebResponse.append("Please select one from the given list:<br />"
+				+ LIST_OF_SUPPORTED_STD);
 		try {
-			DBConnectionManager dm = new DBConnectionManager(DB4_TYPE);
-			dm.saveNewUser(regUser);
-		} catch (MobileEduException e) {
-			ResponseMessageHandler
-					.writeMessage(request, response, errorMessage);
-			e.printStackTrace();
-		} catch (SQLException e) {
-			ResponseMessageHandler
-					.writeMessage(request, response, errorMessage);
+			ResponseMessageHandler.writeMessage(request, response,
+					txtWebResponse.toString());
+		} catch (IOException e) {
+			ResponseMessageHandler.writeMessage(request, response,
+					DEFAULT_ERR_MSG);
 			e.printStackTrace();
 		}
-		// create the appropriate registration message to be sent back
-		txtWebResponse
-				.append("<br />You will get regular examination preparation tips for ");
-		txtWebResponse.append(regUser.getRegStd());
-		txtWebResponse
-				.append(".<br />To stop please SMS @sioguide stop to 92665 92665");
-		ResponseMessageHandler.writeMessage(request, response,
-				txtWebResponse.toString());
+		return;
+	}
+
+	/**
+	 * Respond to the app registration message that is to be sent to txt-web for
+	 * its response
+	 * 
+	 * @param mobileHash
+	 * @throws IOException
+	 */
+	private void respondToRegisterRequest() throws IOException {
+		try {
+			ResponseMessageHandler.writeMessage(request, response,
+					"Application Registration Message");
+		} catch (IOException e) {
+			ResponseMessageHandler.writeMessage(request, response,
+					DEFAULT_ERR_MSG);
+			e.printStackTrace();
+		}
+		return;
 	}
 
 }

@@ -80,8 +80,8 @@ public class DBConnectionManager implements Constants {
 	private static void loadDBProperties() {
 		dbProp = new Properties();
 		try {
-			dbProp.load(DBConnectionManager.class.getClassLoader().getResourceAsStream(
-					DB_CONFIG_FILE));
+			dbProp.load(DBConnectionManager.class.getClassLoader()
+					.getResourceAsStream(DB_CONFIG_FILE));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -97,6 +97,11 @@ public class DBConnectionManager implements Constants {
 	public Users saveNewUser(Users newUser) throws SQLException,
 			MobileEduException {
 		return theDBA.saveUser(newUser);
+	}
+
+	public Users searchForUser(String mobileId) throws SQLException,
+			MobileEduException {
+		return theDBA.getUser(mobileId);
 	}
 
 	protected void finalize() {

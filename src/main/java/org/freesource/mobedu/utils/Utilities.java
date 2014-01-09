@@ -46,7 +46,7 @@ public class Utilities implements Constants{
 
 	public static final String getCurrentTimestamp() {
 		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
-		String d = new SimpleDateFormat("YYYY-MM-DD HH:mm:ss").format(c
+		String d = new SimpleDateFormat("yyyy-MM-DD HH:mm:ss").format(c
 				.getTime());
 		return d;
 	}

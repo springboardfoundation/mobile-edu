@@ -32,6 +32,7 @@ public class ResponseMessageHandler implements Constants {
 		// Write the appid to the response
 		String s = request.getParameter(TXT_WEBID_NAME);
 		if (null != s && !s.isEmpty()) {
+			log.debug(TXT_WEBID_NAME + ":" + s);
 			out.print("<meta name=");
 			out.print(TXT_WEBID_NAME);
 			out.print(" content=");
@@ -49,5 +50,6 @@ public class ResponseMessageHandler implements Constants {
 		// A big NOTE: Closing the response to the web, nothing more can be
 		// written
 		out.close();
+		out.flush();
 	}
 }

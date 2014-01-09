@@ -12,7 +12,6 @@ import java.sql.Statement;
 import org.freesource.mobedu.dao.Users;
 import org.freesource.mobedu.utils.Constants;
 import org.freesource.mobedu.utils.MobileEduException;
-import org.freesource.mobedu.utils.Utilities;
 
 /**
  *
@@ -56,18 +55,22 @@ public class MySQLDataAccessor implements DBAccessor, Constants {
 
 		// Allocate a "PreparedStatement" object in the Connection
 		PreparedStatement pstmt = thisConn.prepareStatement(Q_INSERT_NEW_USER);
-		log.debug("Statement got:" + Q_INSERT_NEW_USER);
 
 		pstmt.setInt(1, nextContextID); // CONTEXT_ID
 		pstmt.setString(2, user.getMobileId()); // MOBILE_HASH
 		pstmt.setString(3, user.getRegStd()); // REG_STD
 
-		String timestamp = Utilities.getCurrentTimestamp();
-		pstmt.setString(4, timestamp); // REG_DATE
-		pstmt.setBoolean(5, true); // IS_ACTIVE
+		pstmt.setString(4, user.getRegDate()); // REG_DATE
+		if (user.isActive())// IS_ACTIVE
+			pstmt.setBoolean(5, true);
+		else
+			pstmt.setBoolean(5, false);
 		pstmt.setString(6, user.getLocation()); // LOCATION
+		pstmt.setString(7, user.getProtocol()); // PROTOCOL
 
+		log.debug("Statement object:" + pstmt.toString());
 		log.debug("INSERTing a record");
+
 		int countUpdated = pstmt.executeUpdate();
 		if (0 == countUpdated) {
 			throw new MobileEduException(
@@ -81,9 +84,9 @@ public class MySQLDataAccessor implements DBAccessor, Constants {
 		Statement stmt = thisConn.createStatement();
 		// Issue a SELECT to get the next context id
 		String strSelect = Q_MAX_CONTEXTID;
-		log.debug("The SQL query is: " + strSelect); // For debugging
+		log.debug("The max select SQL query is: " + strSelect); // For debugging
 		ResultSet rset = stmt.executeQuery(strSelect);
-		while (rset.next()) {
+		if (rset.next()) {
 			int contextId = rset.getInt("CONTEXT_ID");
 			System.out.println("The CONTEXT_ID: " + contextId);
 			return (contextId + 1);
@@ -96,9 +99,29 @@ public class MySQLDataAccessor implements DBAccessor, Constants {
 	 * 
 	 * @see org.freesource.mobedu.db.DBAccessor#getUser(java.lang.String)
 	 */
-	public Users getUser(String txtMobileHash) {
-		// TODO Auto-generated method stub
-		return null;
+	public Users getUser(String txtMobileHash) throws SQLException {
+		Users user = new Users();
+		Statement stmt = thisConn.createStatement();
+		String strSelect = Q_SELECT_USER_WITH_MOBILEHASH + "'" + txtMobileHash
+				+ "'";
+		log.debug("The select SQL query is: " + strSelect);
+		ResultSet rset = stmt.executeQuery(strSelect);
+		if (rset.next()) {
+			user.setContextId(rset.getInt("CONTEXT_ID"));
+			user.setMobileId(rset.getString("MOBILE_HASH"));
+			user.setRegStd(rset.getString("REG_STD"));
+			user.setRegDate(rset.getString("REG_DATE"));
+			if (rset.getBoolean("IS_ACTIVE")) {
+				user.activateUser();
+			} else {
+				user.deActivateUser();
+			}
+			user.setLocation(rset.getString("LOCATION"));
+			user.setProtocol(rset.getString("PROTOCOL"));
+		} else {
+			return null;
+		}
+		return user;
 	}
 
 	public static void main(String[] args) {

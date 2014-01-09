@@ -15,7 +15,6 @@ public class Users {
 	private String protocol;
 
 	public Users() {
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -29,7 +28,7 @@ public class Users {
 	 * @param contextId
 	 *            the contextId to set
 	 */
-	void setContextId(int contextId) {
+	public void setContextId(int contextId) {
 		this.contextId = contextId;
 	}
 
@@ -119,9 +118,20 @@ public class Users {
 	}
 
 	/**
-	 * @param protocol the protocol to set
+	 * @param protocol
+	 *            the protocol to set
 	 */
 	public void setProtocol(String protocol) {
 		this.protocol = protocol;
+	}
+
+	public void copyUser(Users u) {
+		this.contextId = u.getContextId();
+		this.mobileId = u.getMobileId();
+		this.regStd = u.getRegStd();
+		this.regDate = u.getRegDate();
+		this.active = u.isActive();
+		this.location = u.getLocation();
+		this.protocol = u.getProtocol();
 	}
 }
