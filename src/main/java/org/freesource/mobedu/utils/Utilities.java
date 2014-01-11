@@ -19,7 +19,7 @@ public class Utilities implements Constants{
 		switch (cl) {
 		case 10:
 			value = TENTH_CLASS;
-			classMsg = "Registered for 10th Std successfully.";
+			classMsg = "Registered for 10th Std successfully.<br />";
 			break;
 		default:
 			value = "";
@@ -32,7 +32,7 @@ public class Utilities implements Constants{
 		String value = "";
 		if (cl.equals(TENTH_CLASS)) {
 			value = TENTH_CLASS;
-			classMsg = "Registered for 10th Std. ";
+			classMsg = "Registered for 10th Std successfully.<br />";
 		} else {
 			value = "";
 			classMsg = "Invalid standard. ";

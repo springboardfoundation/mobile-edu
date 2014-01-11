@@ -68,9 +68,11 @@ public class DBConnectionManager implements Constants {
 		}
 		// Connection
 		try {
-			conn = DriverManager.getConnection(uri, user, pass);
-			System.out.println("connected");
-			done = true;
+			if (null == conn || !conn.isValid(TENTH)) {
+				conn = DriverManager.getConnection(uri, user, pass);
+				System.out.println("connected");
+				done = true;
+			}
 		} catch (SQLException ex) {
 			System.out.println("SQLException: " + ex.getMessage());
 		}
@@ -104,11 +106,31 @@ public class DBConnectionManager implements Constants {
 		return theDBA.getUser(mobileId);
 	}
 
+	public Users updateUser(Users existingUser) throws SQLException,
+			MobileEduException {
+		return theDBA.updateUserDetails(existingUser);
+	}
+
+	/**
+	 * Destructor method to close the DB connection if still open when the
+	 * object is garbage collected. This may or maynot be called
+	 */
 	protected void finalize() {
+		log.debug("Finalize called.");
 		try {
-			conn.close();
+			if (conn != null && !conn.isClosed()) {
+				log.error("Connection is still open! Calling close()");
+				close();
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+		}
+	}
+
+	public void close() throws SQLException {
+		if (!conn.isClosed()) {
+			conn.close();
+			conn = null;
 		}
 	}
 }

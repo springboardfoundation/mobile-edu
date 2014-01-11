@@ -36,59 +36,70 @@ public class UserRequestHandler extends HttpServlet implements Constants {
 
 	public void doGet(HttpServletRequest req, HttpServletResponse res)
 			throws IOException {
-
-		UserHandlerService useService;
 		try {
-			useService = new UserHandlerService(req);
+			UserHandlerService useService;
+			// Buffer to contain the response to be sent back to the user
+			StringBuffer txtWebResponse = new StringBuffer();
+
+			// Assign to global variables so that other fucntions can use it
+			request = req;
+			response = res;
+			response.setContentType("text/html");
+
+			useService = new UserHandlerService(DB4_TYPE);
+
+			// Get the Mobile number from the request parameters
+			String mobileHash = request.getParameter(HTTP_PARAM_TXTWEB_MOBILE);
+			// Get the message from the request parameter
+			String txtweb_message = request
+					.getParameter(HTTP_PARAM_TXTWEB_MESSAGE);
+			// To avoid null checks
+			if (null == txtweb_message)
+				txtweb_message = "";
+
+			// What if there is no mobile hash?
+			// Means the request is from txt-web to register the app
+			if (null == mobileHash || mobileHash.isEmpty()) {
+				respondToRegisterRequest();
+				return;
+			}
+
+			useService.populateUser(regUser, mobileHash, txtweb_message);
+			// Populate protocol
+			regUser.setProtocol(request
+					.getParameter(HTTP_PARAM_TXTWEB_PROTOCOL));
+			if (regUser.getRegStd().isEmpty()
+					&& !txtweb_message.equalsIgnoreCase(UNREGISTER)) {
+				// The user has requested to register to an invalid std and
+				// hence it was not populated by populateUser()
+				replyForValidStd(txtWebResponse);
+				return;
+			}
+
+			// Handle the all service stop request here
+			if (txtweb_message.equalsIgnoreCase(UNREGISTER)) {
+				txtWebResponse.append(useService.stopService(regUser));
+			} else { // Handle start/register request here
+				txtWebResponse.append(useService.startService(regUser));
+			}
+			/*
+			 * On closing the DB connections, subsequent calls are getting error
+			 * mysql.jdbc.exceptions.jdbc4.MySQLNonTransientConnectionException
+			 * : No operations allowed after connection closed.
+			 */
+			// useService.closeConnections();
+			ResponseMessageHandler.writeMessage(request, response,
+					txtWebResponse.toString());
 		} catch (MobileEduException e) {
-			e.printStackTrace();
+			log.debug(e.getMessage());
 			ResponseMessageHandler.writeMessage(request, response,
 					DEFAULT_ERR_MSG);
 			return;
-		}
-
-		// Assign to global variables so that other fucntions can use it
-		request = req;
-		response = res;
-		response.setContentType("text/html");
-
-		useService.populateUser(regUser);
-		// Buffer to contain the response to be sent back to the user
-		StringBuffer txtWebResponse = new StringBuffer();
-
-		// What if there is no mobile hash?
-		String mobileHash = request.getParameter(HTTP_PARAM_TXTWEB_MOBILE);
-		if (null == mobileHash || mobileHash.isEmpty()) {
-			respondToRegisterRequest();
-			return;
-		}
-
-		if (useService.searchUser(mobileHash, regUser)) {
-			txtWebResponse
-					.append("You are already registered to this service for getting tips of:");
-			txtWebResponse.append(regUser.getRegStd());
-			txtWebResponse
-					.append("<br />To stop please SMS @sioguide stop to 92665 92665");
+		} catch (IOException e) {
+			log.debug(e.getMessage());
 			ResponseMessageHandler.writeMessage(request, response,
-					txtWebResponse.toString());
-			return;
+					DEFAULT_ERR_MSG);
 		}
-		String standard = request.getParameter(HTTP_PARAM_TXTWEB_MESSAGE);
-		// Get the correct string to be stored in DB for the standard
-		if (null == standard || 0 == standard.length()) {
-			// Default will be 10th Standard
-			txtWebResponse.append("No class given for registration. ");
-		}
-		txtWebResponse.append(Utilities.getStdReplyMessage());
-
-		// The user has requested to register to the std, check for its validity
-		if (regUser.getRegStd().isEmpty()) {
-			replyForValidStd(txtWebResponse);
-			return;
-		}
-		// Finally Save to the DB
-		String reply = useService.saveUserToDB(txtWebResponse, regUser);
-		ResponseMessageHandler.writeMessage(request, response, reply);
 	}
 
 	/**
@@ -97,40 +108,32 @@ public class UserRequestHandler extends HttpServlet implements Constants {
 	 * without continuing further
 	 * 
 	 * @param txtWebResponse
+	 *            - StringBuffer to append the response and send to the user
 	 * @throws IOException
 	 */
 	private void replyForValidStd(StringBuffer txtWebResponse)
 			throws IOException {
 
+		txtWebResponse.append("Invalid option selected. ");
 		txtWebResponse.append("Please select one from the given list:<br />"
 				+ LIST_OF_SUPPORTED_STD);
-		try {
-			ResponseMessageHandler.writeMessage(request, response,
-					txtWebResponse.toString());
-		} catch (IOException e) {
-			ResponseMessageHandler.writeMessage(request, response,
-					DEFAULT_ERR_MSG);
-			e.printStackTrace();
-		}
-		return;
+		txtWebResponse.append("<br /> Eg: @sioguide 10th");
+		ResponseMessageHandler.writeMessage(request, response,
+				txtWebResponse.toString());
 	}
 
 	/**
 	 * Respond to the app registration message that is to be sent to txt-web for
-	 * its response
+	 * its response.
 	 * 
 	 * @param mobileHash
 	 * @throws IOException
 	 */
 	private void respondToRegisterRequest() throws IOException {
-		try {
-			ResponseMessageHandler.writeMessage(request, response,
-					"Application Registration Message");
-		} catch (IOException e) {
-			ResponseMessageHandler.writeMessage(request, response,
-					DEFAULT_ERR_MSG);
-			e.printStackTrace();
-		}
+		// This has been moved to a separate method so that it can be changed in
+		// future to forward to a different page, if required
+		ResponseMessageHandler.writeMessage(request, response,
+				"Application Registration Message");
 		return;
 	}
 

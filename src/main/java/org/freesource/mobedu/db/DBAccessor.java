@@ -15,4 +15,8 @@ import org.freesource.mobedu.utils.MobileEduException;
 public interface DBAccessor {
 	Users saveUser(Users user) throws SQLException, MobileEduException;
 	Users getUser(String txtMobileHash) throws SQLException, MobileEduException;
+	Users updateUserDetails(Users user) throws SQLException, MobileEduException;
+	Users updateUserStd(Users user) throws SQLException, MobileEduException;
+	Users activateUser(Users user) throws SQLException, MobileEduException;
+	Users deActivateUser(Users user) throws SQLException, MobileEduException;
 }

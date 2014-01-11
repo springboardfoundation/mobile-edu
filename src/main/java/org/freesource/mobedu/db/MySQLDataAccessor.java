@@ -88,9 +88,10 @@ public class MySQLDataAccessor implements DBAccessor, Constants {
 		ResultSet rset = stmt.executeQuery(strSelect);
 		if (rset.next()) {
 			int contextId = rset.getInt("CONTEXT_ID");
-			System.out.println("The CONTEXT_ID: " + contextId);
+			stmt.close();
 			return (contextId + 1);
 		}
+		stmt.close();
 		return -1;
 	}
 
@@ -119,8 +120,10 @@ public class MySQLDataAccessor implements DBAccessor, Constants {
 			user.setLocation(rset.getString("LOCATION"));
 			user.setProtocol(rset.getString("PROTOCOL"));
 		} else {
+			stmt.close();
 			return null;
 		}
+		stmt.close();
 		return user;
 	}
 
@@ -137,5 +140,54 @@ public class MySQLDataAccessor implements DBAccessor, Constants {
 		} catch (MobileEduException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public Users updateUserDetails(Users user) throws SQLException,
+			MobileEduException {
+		// String Q_UPDATE_USER_WITH_ID =
+		// "UPDATE USER_CONTEXT SET REG_STD = ?, REG_DATE = ?, IS_ACTIVE = ?, LOCATION = ?, PROTOCOL = ? WHERE CONTEXT_ID = ?";
+		PreparedStatement pstmt = thisConn
+				.prepareStatement(Q_UPDATE_USER_WITH_ID);
+
+		pstmt.setString(1, user.getRegStd()); // REG_STD
+		pstmt.setString(2, user.getRegDate()); // REG_DATE
+		if (user.isActive())// IS_ACTIVE
+			pstmt.setBoolean(3, true);
+		else
+			pstmt.setBoolean(3, false);
+
+		pstmt.setString(4, user.getLocation()); // LOCATION
+		pstmt.setString(5, user.getProtocol()); // PROTOCOL
+
+		pstmt.setInt(6, user.getContextId()); // CONTEXT_ID
+
+		log.debug("Statement object:" + pstmt.toString());
+		log.debug("UPDATEing a record");
+
+		int countUpdated = pstmt.executeUpdate();
+		if (0 == countUpdated) {
+			throw new MobileEduException(
+					"MySQLDataAccessor: Unable to save to DB, reason unknown...!");
+		}
+		pstmt.close();
+		return user;
+	}
+
+	public Users updateUserStd(Users user) throws SQLException,
+			MobileEduException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Users activateUser(Users user) throws SQLException,
+			MobileEduException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Users deActivateUser(Users user) throws SQLException,
+			MobileEduException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

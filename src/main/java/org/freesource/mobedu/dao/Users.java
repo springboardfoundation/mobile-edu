@@ -15,6 +15,7 @@ public class Users {
 	private String protocol;
 
 	public Users() {
+		active = false;
 	}
 
 	/**

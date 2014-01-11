@@ -6,8 +6,6 @@ package org.freesource.mobedu.services;
 import java.io.IOException;
 import java.sql.SQLException;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.freesource.mobedu.dao.Users;
 import org.freesource.mobedu.db.DBConnectionManager;
 import org.freesource.mobedu.utils.Constants;
@@ -19,31 +17,23 @@ import org.freesource.mobedu.utils.Utilities;
  */
 public class UserHandlerService implements Constants {
 
-	HttpServletRequest request;
 	DBConnectionManager dm;
 
 	/**
 	 * @throws MobileEduException
 	 * 
 	 */
-	public UserHandlerService(HttpServletRequest req) throws MobileEduException {
-		// Assign to global variable so that other fucntions can use it
-		request = req;
-		dm = new DBConnectionManager(DB4_TYPE);
+	public UserHandlerService(String type) throws MobileEduException {
+		dm = new DBConnectionManager(type);
 	}
 
-	public void populateUser(Users user) {
-		/*
-		 * private String protocol;
-		 */
-		// Get the Mobile number from the request parameters
-		String mobileHash = request.getParameter(HTTP_PARAM_TXTWEB_MOBILE);
+	public void populateUser(Users user, String mobileHash, String standard) {
+
 		log.debug("Mobile Hash passed:" + mobileHash);
 		user.setMobileId(mobileHash);
-		// Get the message from the request parameter
-		String standard = request.getParameter(HTTP_PARAM_TXTWEB_MESSAGE);
+
 		// Get the correct string to be stored in DB for the standard
-		if (null == standard || 0 == standard.length()) {
+		if (null == standard || standard.isEmpty()) {
 			// Default will be 10th Standard
 			user.setRegStd(Utilities.getStdClass(TENTH));
 		} else {
@@ -54,7 +44,6 @@ public class UserHandlerService implements Constants {
 		user.activateUser();
 
 		setUserLocation(user);
-		user.setProtocol(request.getParameter(HTTP_PARAM_TXTWEB_PROTOCOL));
 	}
 
 	/**
@@ -76,8 +65,9 @@ public class UserHandlerService implements Constants {
 	 * @param txtWebResponse
 	 * @throws IOException
 	 */
-	public String saveUserToDB(StringBuffer txtWebResponse, Users user)
-			throws IOException {
+	public String saveUserToDB(Users user) {
+		StringBuffer rVal = new StringBuffer();
+		String std = user.getRegStd();
 		try {
 			dm.saveNewUser(user);
 		} catch (MobileEduException e) {
@@ -87,20 +77,27 @@ public class UserHandlerService implements Constants {
 			e.printStackTrace();
 			return DEFAULT_ERR_MSG;
 		}
+		// This is just to build the proper response to be sent back
+		if (std.isEmpty()) {
+			rVal.append("No class given for registration, taking 10th as default. ");
+		}
+		rVal.append(Utilities.getStdReplyMessage());
+
 		// create the appropriate registration message to be sent back
-		txtWebResponse
-				.append("<br />You will get regular examination preparation tips for ");
-		txtWebResponse.append(user.getRegStd());
-		txtWebResponse
-				.append(".<br />To stop please SMS @sioguide stop to 92665 92665");
-		return txtWebResponse.toString();
+		rVal.append("You will get regular examination preparation tips for "
+				+ user.getRegStd()
+				+ ".<br />To stop please SMS @sioguide stop to "
+				+ TXTWEB_MOBILE_NUMBER);
+		return rVal.toString();
 	}
 
 	/**
-	 * Function to search for the user in the DB for existence 
+	 * Function to search for the user in the DB for existence
 	 * 
-	 * @param mobileHash - The mobile number id of the user
-	 * @param user - The user object in which user will be returned if found
+	 * @param mobileHash
+	 *            - The mobile number id of the user
+	 * @param user
+	 *            - The user object in which user will be returned if found
 	 * @return - TRUE if user is found, FALSE otherwise
 	 */
 	public boolean searchUser(String mobileHash, Users user) {
@@ -120,6 +117,143 @@ public class UserHandlerService implements Constants {
 		// User exists, hence assign to the passed object
 		user.copyUser(u);
 		return true;
+	}
+
+	/**
+	 * Handle all the stop service request. Below table illustrates the possible
+	 * options of a stop request by the user:
+	 * <table border="1">
+	 * <tr>
+	 * <th>User Exists</th>
+	 * <th>User IS ACTIVE</th>
+	 * <th>Action to be taken</th>
+	 * </tr>
+	 * <tr>
+	 * <td align="center">No</td>
+	 * <td align="center">---</td>
+	 * <td>Error: Not registered</td>
+	 * </tr>
+	 * </tr>
+	 * <tr>
+	 * <td align="center">Yes</td>
+	 * <td align="center">No</td>
+	 * <td>Error: Not registered</td>
+	 * </tr>
+	 * <tr>
+	 * <td align="center">Yes</td>
+	 * <td align="center">Yes</td>
+	 * <td>Success: Unregister</td>
+	 * </tr>
+	 * </table>
+	 * 
+	 * @param regUser
+	 *            - The user to be unregistered
+	 * @return String - The reply message to be sent
+	 * @throws MobileEduException
+	 */
+	public String stopService(Users regUser) throws MobileEduException {
+		String reply = null;
+		try {
+			if (!searchUser(regUser.getMobileId(), regUser)
+					|| !regUser.isActive()) {
+				reply = "You are not registered to this service."
+						+ "<br />To register SMS @sioguide &#60;Class&#62; to "
+						+ TXTWEB_MOBILE_NUMBER + "<br /> Eg: @sioguide 10th";
+			} else {
+				// If code comes here then the user is exists and is active
+				regUser.deActivateUser();
+				dm.updateUser(regUser);
+				reply = "Thank you for using SIO-Guide service.<br />"
+						+ "You have been successfully unregistered.<br />"
+						+ "To register again SMS @sioguide &#60;Class&#62 to "
+						+ TXTWEB_MOBILE_NUMBER + "<br /> Eg: @sioguide 10th";
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new MobileEduException(e.getErrorCode() + "", e.getMessage());
+		} catch (MobileEduException e) {
+			e.printStackTrace();
+			throw new MobileEduException(e.getErrorCode() + "", e.getMessage());
+		}
+		return reply;
+	}
+
+	/**
+	 * Handle all the start service request. Below table illustrates the
+	 * possible options of a start request by the user:
+	 * <table border="1">
+	 * <tr>
+	 * <th>User Exists</th>
+	 * <th>User IS ACTIVE</th>
+	 * <th>Action to be taken</th>
+	 * </tr>
+	 * <tr>
+	 * <td align="center">No</td>
+	 * <td align="center">---</td>
+	 * <td>Success: Register</td>
+	 * </tr>
+	 * </tr>
+	 * <tr>
+	 * <td align="center">Yes</td>
+	 * <td align="center">No</td>
+	 * <td>Success: Register</td>
+	 * </tr>
+	 * <tr>
+	 * <td align="center">Yes</td>
+	 * <td align="center">Yes</td>
+	 * <td>Error: Already Registered</td>
+	 * </tr>
+	 * </table>
+	 * 
+	 * @param user
+	 * @return
+	 * @throws MobileEduException
+	 */
+	public String startService(Users user) throws MobileEduException {
+		String reply = null;
+		try {
+			if (searchUser(user.getMobileId(), user) && user.isActive()) {
+				reply = "You are already registered to this service for getting tips of:"
+						+ "<br />"
+						+ user.getRegStd()
+						+ "<br />To stop please SMS @sioguide stop to "
+						+ TXTWEB_MOBILE_NUMBER;
+			} else {
+				// If code comes here then either user does not exists or is
+				// inactive
+				log.debug("Checking if the user is active.");
+				if (!user.isActive()) {
+					user.activateUser();
+					log.debug("User activated and now updating the user");
+					dm.updateUser(user);
+					// create the appropriate registration message to be sent
+					// back
+					reply = "You will get regular examination preparation tips for "
+							+ user.getRegStd()
+							+ ".<br />To stop please SMS @sioguide stop to "
+							+ TXTWEB_MOBILE_NUMBER;
+				} else {
+					// Finally Save to the DB
+					reply = saveUserToDB(user);
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new MobileEduException(e.getErrorCode() + "", e.getMessage());
+		} catch (MobileEduException e) {
+			e.printStackTrace();
+			throw new MobileEduException(e.getErrorCode() + "", e.getMessage());
+		}
+		return reply;
+	}
+
+	public void closeConnections() throws MobileEduException {
+		try {
+			dm.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new MobileEduException(e.getErrorCode() + "", e.getMessage());
+		}
 	}
 
 }

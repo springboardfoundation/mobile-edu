@@ -8,7 +8,7 @@ CREATE OR REPLACE TABLE USER_CONTEXT
   REG_DATE TIMESTAMP NOT NULL, /* Date when the user record was inserted */
   IS_ACTIVE BOOLEAN DEFAULT TRUE, /* TRUE-Active, FALSE-Otherwise; user request based */
   LOCATION VARCHAR(50), /* Additional info, can be received from the provider */
-  PROTOCOL VARCHAR(30)  /* Protocol info of the way registration was done */
+  PROTOCOL VARCHAR(5)  /* Protocol info of the way registration was done */
 )
 /
 
