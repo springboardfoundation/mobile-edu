@@ -53,20 +53,23 @@ public class MySQLDataAccessor implements DBAccessor, Constants {
 					"MySQLDataAccessor: Unable to get the value for next CONTEXT_ID from table: USER_CONTEXT.");
 		}
 
+		// String Q_INSERT_NEW_USER =
+		// "INSERT INTO USER_CONTEXT (CONTEXT_ID, MOBILE_HASH, REG_STD, REG_SUB, REG_DATE, IS_ACTIVE, LOCATION, PROTOCOL) VALUES (?, ?, ?, ?, ?, ?, ?)";
 		// Allocate a "PreparedStatement" object in the Connection
 		PreparedStatement pstmt = thisConn.prepareStatement(Q_INSERT_NEW_USER);
 
 		pstmt.setInt(1, nextContextID); // CONTEXT_ID
 		pstmt.setString(2, user.getMobileId()); // MOBILE_HASH
-		pstmt.setString(3, user.getRegStd()); // REG_STD
+		pstmt.setString(3, user.getRegStandard()); // REG_STD
+		pstmt.setString(4, user.getRegSubject()); // REG_SUB
 
-		pstmt.setString(4, user.getRegDate()); // REG_DATE
+		pstmt.setString(5, user.getRegDate()); // REG_DATE
 		if (user.isActive())// IS_ACTIVE
-			pstmt.setBoolean(5, true);
+			pstmt.setBoolean(6, true);
 		else
-			pstmt.setBoolean(5, false);
-		pstmt.setString(6, user.getLocation()); // LOCATION
-		pstmt.setString(7, user.getProtocol()); // PROTOCOL
+			pstmt.setBoolean(6, false);
+		pstmt.setString(7, user.getLocation()); // LOCATION
+		pstmt.setString(8, user.getProtocol()); // PROTOCOL
 
 		log.debug("Statement object:" + pstmt.toString());
 		log.debug("INSERTing a record");
@@ -110,7 +113,8 @@ public class MySQLDataAccessor implements DBAccessor, Constants {
 		if (rset.next()) {
 			user.setContextId(rset.getInt("CONTEXT_ID"));
 			user.setMobileId(rset.getString("MOBILE_HASH"));
-			user.setRegStd(rset.getString("REG_STD"));
+			user.setRegStandard(rset.getString("REG_STD"));
+			user.setRegSubject(rset.getString("REG_SUB"));
 			user.setRegDate(rset.getString("REG_DATE"));
 			if (rset.getBoolean("IS_ACTIVE")) {
 				user.activateUser();
@@ -130,7 +134,7 @@ public class MySQLDataAccessor implements DBAccessor, Constants {
 	public static void main(String[] args) {
 		Users u = new Users();
 		u.setMobileId("3594jv-3534-bv34c34c3-5343534");
-		u.setRegStd("10th");
+		u.setRegStandard("10th");
 
 		MySQLDataAccessor d = new MySQLDataAccessor();
 		try {
@@ -144,22 +148,23 @@ public class MySQLDataAccessor implements DBAccessor, Constants {
 
 	public Users updateUserDetails(Users user) throws SQLException,
 			MobileEduException {
-		// String Q_UPDATE_USER_WITH_ID =
-		// "UPDATE USER_CONTEXT SET REG_STD = ?, REG_DATE = ?, IS_ACTIVE = ?, LOCATION = ?, PROTOCOL = ? WHERE CONTEXT_ID = ?";
+		// UPDATE USER_CONTEXT SET REG_STD = ?, REG_SUB = ?, REG_DATE = ?,
+		// IS_ACTIVE = ?, LOCATION = ?, PROTOCOL = ? WHERE CONTEXT_ID = ?
 		PreparedStatement pstmt = thisConn
 				.prepareStatement(Q_UPDATE_USER_WITH_ID);
 
-		pstmt.setString(1, user.getRegStd()); // REG_STD
-		pstmt.setString(2, user.getRegDate()); // REG_DATE
+		pstmt.setString(1, user.getRegStandard()); // REG_STD
+		pstmt.setString(2, user.getRegSubject()); // REG_SUB
+		pstmt.setString(3, user.getRegDate()); // REG_DATE
 		if (user.isActive())// IS_ACTIVE
-			pstmt.setBoolean(3, true);
+			pstmt.setBoolean(4, true);
 		else
-			pstmt.setBoolean(3, false);
+			pstmt.setBoolean(4, false);
 
-		pstmt.setString(4, user.getLocation()); // LOCATION
-		pstmt.setString(5, user.getProtocol()); // PROTOCOL
+		pstmt.setString(5, user.getLocation()); // LOCATION
+		pstmt.setString(6, user.getProtocol()); // PROTOCOL
 
-		pstmt.setInt(6, user.getContextId()); // CONTEXT_ID
+		pstmt.setInt(7, user.getContextId()); // CONTEXT_ID
 
 		log.debug("Statement object:" + pstmt.toString());
 		log.debug("UPDATEing a record");

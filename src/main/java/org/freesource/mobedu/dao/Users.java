@@ -9,6 +9,7 @@ public class Users {
 	private int contextId;
 	private String mobileId;
 	private String regStd;
+	private String regSubject;
 	private String regDate;
 	private boolean active;
 	private String location;
@@ -51,7 +52,7 @@ public class Users {
 	/**
 	 * @return the regStd
 	 */
-	public final String getRegStd() {
+	public final String getRegStandard() {
 		return regStd;
 	}
 
@@ -59,8 +60,23 @@ public class Users {
 	 * @param regStd
 	 *            the regStd to set
 	 */
-	public final void setRegStd(String regStd) {
+	public final void setRegStandard(String regStd) {
 		this.regStd = regStd;
+	}
+
+	/**
+	 * @param regSub
+	 *            the regSububject to set
+	 */
+	public final void setRegSubject(String regSub) {
+		this.regSubject = regSub;
+	}
+
+	/**
+	 * @return the regSubject
+	 */
+	public final String getRegSubject() {
+		return regSubject;
 	}
 
 	/**
@@ -86,12 +102,15 @@ public class Users {
 	}
 
 	/**
-	 * 
+	 * Activate the user by setting the active to true
 	 */
 	public final void activateUser() {
 		this.active = true;
 	}
 
+	/**
+	 * Deactivate the user by setting the active to false
+	 */
 	public final void deActivateUser() {
 		this.active = false;
 	}
@@ -129,7 +148,8 @@ public class Users {
 	public void copyUser(Users u) {
 		this.contextId = u.getContextId();
 		this.mobileId = u.getMobileId();
-		this.regStd = u.getRegStd();
+		this.regStd = u.getRegStandard();
+		this.regSubject = u.getRegSubject();
 		this.regDate = u.getRegDate();
 		this.active = u.isActive();
 		this.location = u.getLocation();

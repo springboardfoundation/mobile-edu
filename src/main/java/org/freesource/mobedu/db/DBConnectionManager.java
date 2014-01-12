@@ -20,7 +20,6 @@ import org.freesource.mobedu.utils.MobileEduException;
  */
 public class DBConnectionManager implements Constants {
 
-	private static final String DB_CONFIG_FILE = DB_PROP_FILE;
 	private static Properties dbProp = null;
 	private Connection conn = null;
 	private DBAccessor theDBA = null;
@@ -68,7 +67,7 @@ public class DBConnectionManager implements Constants {
 		}
 		// Connection
 		try {
-			if (null == conn || !conn.isValid(TENTH)) {
+			if (null == conn || !conn.isValid(DB_VALID_CHECK_TIMEOUT)) {
 				conn = DriverManager.getConnection(uri, user, pass);
 				System.out.println("connected");
 				done = true;
@@ -83,7 +82,7 @@ public class DBConnectionManager implements Constants {
 		dbProp = new Properties();
 		try {
 			dbProp.load(DBConnectionManager.class.getClassLoader()
-					.getResourceAsStream(DB_CONFIG_FILE));
+					.getResourceAsStream(DB_PROP_FILE));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

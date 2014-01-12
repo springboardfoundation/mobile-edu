@@ -46,17 +46,8 @@ public class UserRequestHandler extends HttpServlet implements Constants {
 			response = res;
 			response.setContentType("text/html");
 
-			useService = new UserHandlerService(DB4_TYPE);
-
 			// Get the Mobile number from the request parameters
 			String mobileHash = request.getParameter(HTTP_PARAM_TXTWEB_MOBILE);
-			// Get the message from the request parameter
-			String txtweb_message = request
-					.getParameter(HTTP_PARAM_TXTWEB_MESSAGE);
-			// To avoid null checks
-			if (null == txtweb_message)
-				txtweb_message = "";
-
 			// What if there is no mobile hash?
 			// Means the request is from txt-web to register the app
 			if (null == mobileHash || mobileHash.isEmpty()) {
@@ -64,11 +55,21 @@ public class UserRequestHandler extends HttpServlet implements Constants {
 				return;
 			}
 
-			useService.populateUser(regUser, mobileHash, txtweb_message);
+			useService = new UserHandlerService(DB4_TYPE);
+			// Get the message from the request parameter
+			String txtweb_message = request
+					.getParameter(HTTP_PARAM_TXTWEB_MESSAGE);
+
+			if (!useService.validatePopulateUser(regUser, mobileHash,
+					txtweb_message)) {
+				ResponseMessageHandler.writeMessage(request, response,
+						useService.getMessage());
+				return;
+			}
 			// Populate protocol
 			regUser.setProtocol(request
 					.getParameter(HTTP_PARAM_TXTWEB_PROTOCOL));
-			if (regUser.getRegStd().isEmpty()
+			if (regUser.getRegStandard().isEmpty()
 					&& !txtweb_message.equalsIgnoreCase(UNREGISTER)) {
 				// The user has requested to register to an invalid std and
 				// hence it was not populated by populateUser()
@@ -77,7 +78,8 @@ public class UserRequestHandler extends HttpServlet implements Constants {
 			}
 
 			// Handle the all service stop request here
-			if (txtweb_message.equalsIgnoreCase(UNREGISTER)) {
+			if (null != txtweb_message
+					&& txtweb_message.equalsIgnoreCase(UNREGISTER)) {
 				txtWebResponse.append(useService.stopService(regUser));
 			} else { // Handle start/register request here
 				txtWebResponse.append(useService.startService(regUser));
@@ -116,7 +118,7 @@ public class UserRequestHandler extends HttpServlet implements Constants {
 
 		txtWebResponse.append("Invalid option selected. ");
 		txtWebResponse.append("Please select one from the given list:<br />"
-				+ LIST_OF_SUPPORTED_STD);
+				+ Utilities.getListOfSupportedClass());
 		txtWebResponse.append("<br /> Eg: @sioguide 10th");
 		ResponseMessageHandler.writeMessage(request, response,
 				txtWebResponse.toString());
