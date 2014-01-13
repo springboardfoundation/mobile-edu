@@ -119,7 +119,7 @@ public class UserHandlerService implements Constants {
 		// create the appropriate registration message to be sent back
 		message.append("You will get regular examination preparation tips for "
 				+ user.getRegStandard()
-				+ ".<br />To stop please SMS @sioguide stop to "
+				+ "std.<br />To stop please SMS @sioguide stop to "
 				+ TXTWEB_MOBILE_NUMBER);
 		return message.toString();
 	}
@@ -266,7 +266,7 @@ public class UserHandlerService implements Constants {
 					message.append(Utilities.getStdReplyMessage());
 					message.append("You will get regular examination preparation tips for "
 							+ user.getRegStandard()
-							+ ".<br />To stop please SMS @sioguide stop to "
+							+ "std.<br />To stop please SMS @sioguide stop to "
 							+ TXTWEB_MOBILE_NUMBER);
 				} else {
 					// Finally Save to the DB
