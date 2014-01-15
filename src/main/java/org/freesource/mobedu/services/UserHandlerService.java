@@ -25,8 +25,8 @@ public class UserHandlerService implements Constants {
 	 * @throws MobileEduException
 	 * 
 	 */
-	public UserHandlerService(String type) throws MobileEduException {
-		dm = new DBConnectionManager(type);
+	public UserHandlerService() throws MobileEduException {
+		dm = new DBConnectionManager();
 		message = new StringBuffer();
 	}
 
@@ -49,13 +49,18 @@ public class UserHandlerService implements Constants {
 				arguments = URLDecoder.decode(arguments, "UTF-8");
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
+				message.append("Error occurred when decoding the arguments. "
+						+ "Please remove any special character in the message."
+						+ "<br />To register SMS @sioguide &#60;Class&#62; to "
+						+ TXTWEB_MOBILE_NUMBER + "<br />Eg: @sioguide 10th");
+				return false;
 			}
 			args = arguments.split(" ");
 
 			if (args.length > 2) {
 				message.append("Invalid number of arguments passed."
 						+ "<br />To register SMS @sioguide &#60;Class&#62; to "
-						+ TXTWEB_MOBILE_NUMBER + "<br /> Eg: @sioguide 10th");
+						+ TXTWEB_MOBILE_NUMBER + "<br />Eg: @sioguide 10th");
 				return false;
 			}
 			if (args.length == 2) {
@@ -66,13 +71,11 @@ public class UserHandlerService implements Constants {
 						&& !arguments.equalsIgnoreCase(UNREGISTER)) {
 					message.append("Invalid number of arguments passed."
 							+ "<br />To register SMS @sioguide &#60;Class&#62; to "
-							+ TXTWEB_MOBILE_NUMBER
-							+ "<br /> Eg: @sioguide 10th");
+							+ TXTWEB_MOBILE_NUMBER + "<br />Eg: @sioguide 10th");
 				} else {
 					message.append("Subject specific registration is coming soon."
 							+ "<br />To register SMS @sioguide &#60;Class&#62; to "
-							+ TXTWEB_MOBILE_NUMBER
-							+ "<br /> Eg: @sioguide 10th");
+							+ TXTWEB_MOBILE_NUMBER + "<br />Eg: @sioguide 10th");
 				}
 				return false;
 			}
@@ -119,7 +122,7 @@ public class UserHandlerService implements Constants {
 		// create the appropriate registration message to be sent back
 		message.append("You will get regular examination preparation tips for "
 				+ user.getRegStandard()
-				+ "std.<br />To stop please SMS @sioguide stop to "
+				+ " std.<br />To stop please SMS @sioguide stop to "
 				+ TXTWEB_MOBILE_NUMBER);
 		return message.toString();
 	}
@@ -192,7 +195,7 @@ public class UserHandlerService implements Constants {
 					|| !regUser.isActive()) {
 				message.append("You are not registered to this service."
 						+ "<br />To register SMS @sioguide &#60;Class&#62; to "
-						+ TXTWEB_MOBILE_NUMBER + "<br /> Eg: @sioguide 10th");
+						+ TXTWEB_MOBILE_NUMBER + "<br />Eg: @sioguide 10th");
 			} else {
 				// If code comes here then the user is exists and is active
 				regUser.deActivateUser();
@@ -200,7 +203,7 @@ public class UserHandlerService implements Constants {
 				message.append("Thank you for using SIO-Guide service.<br />"
 						+ "You have been successfully unregistered.<br />"
 						+ "To register again SMS @sioguide &#60;Class&#62 to "
-						+ TXTWEB_MOBILE_NUMBER + "<br /> Eg: @sioguide 10th");
+						+ TXTWEB_MOBILE_NUMBER + "<br />Eg: @sioguide 10th");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -244,29 +247,32 @@ public class UserHandlerService implements Constants {
 	 * @throws MobileEduException
 	 */
 	public String startService(Users user) throws MobileEduException {
+		// Save the current standard as it gets overwritten by search, if found
+		String currentStd = user.getRegStandard();
 		// Clear the message object to populate it with the results string
 		message.delete(0, message.length());
 		try {
 			if (searchUser(user.getMobileId(), user) && user.isActive()) {
-				message.append("You are already registered to this service for getting tips of:"
-						+ "<br />"
+				message.append("You are already registered to this service for getting tips of: "
 						+ user.getRegStandard()
-						+ "<br />To stop please SMS @sioguide stop to "
+						+ "<br />Note: Multiple class registration is not yet supported<br />"
+						+ "To stop please SMS @sioguide stop to "
 						+ TXTWEB_MOBILE_NUMBER);
 			} else {
-				// If code comes here then either user does not exists or is
+				// If control comes here then either user does not exists or is
 				// inactive
-				log.debug("Checking if the user is active. " + message);
 				if (!user.isActive()) {
+					// Set the previously saved standard again
+					user.setRegStandard(currentStd);
 					user.activateUser();
-					log.debug("User activated and now updating the user");
+					log.debug("User activated and now updating the user in DB");
 					dm.updateUser(user);
 					// create the appropriate registration message to be sent
 					// back
 					message.append(Utilities.getStdReplyMessage());
 					message.append("You will get regular examination preparation tips for "
 							+ user.getRegStandard()
-							+ "std.<br />To stop please SMS @sioguide stop to "
+							+ " std.<br />To stop please SMS @sioguide stop to "
 							+ TXTWEB_MOBILE_NUMBER);
 				} else {
 					// Finally Save to the DB

@@ -20,7 +20,7 @@ import org.freesource.mobedu.utils.MobileEduException;
  */
 public class DBConnectionManager implements Constants {
 
-	private static Properties dbProp = null;
+	private Properties dbProp = null;
 	private Connection conn = null;
 	private DBAccessor theDBA = null;
 
@@ -30,25 +30,26 @@ public class DBConnectionManager implements Constants {
 	 * 
 	 * @throws MobileEduException
 	 */
-	public DBConnectionManager(String type) throws MobileEduException {
-		if (type.equals(DB4_TYPE)) {
-			String dburi = getDB4_URI();
-			if (!connect(dburi, MYSQL_DRIVER_CLASS, getDBProperty(DB4_USER),
-					getDBProperty(DB4_PASS))) {
-				throw new MobileEduException("Unable to get DB connection!");
-			}
-			theDBA = MySQLDataAccessor.getInstance(conn);
-			System.out.println("Success in connecting to the DB");
+	public DBConnectionManager() throws MobileEduException {
+		String dbType = getDBProperty(DB4_TYPE);
+		String dburi = getDB4_URI();
+		if (!connect(dburi, MYSQL_DRIVER_CLASS,
+				getDBProperty(dbType + DB4_USER), getDBProperty(dbType
+						+ DB4_PASS))) {
+			throw new MobileEduException("Unable to get DB connection!");
 		}
+		theDBA = MySQLDataAccessor.getInstance(conn);
+		System.out.println("Success in connecting to the DB");
 	}
 
 	private String getDB4_URI() {
+		String dbType = getDBProperty(DB4_TYPE);
 		StringBuffer dbURI = new StringBuffer("jdbc:mysql://");
-		dbURI.append(getDBProperty(DB4_HOST));
+		dbURI.append(getDBProperty(dbType + DB4_HOST));
 		dbURI.append(":");
-		dbURI.append(getDBProperty(DB4_PORT));
+		dbURI.append(getDBProperty(dbType + DB4_PORT));
 		dbURI.append("/");
-		dbURI.append(getDBProperty(DB4_NAME));
+		dbURI.append(getDBProperty(dbType + DB4_NAME));
 		return dbURI.toString();
 	}
 
@@ -60,10 +61,13 @@ public class DBConnectionManager implements Constants {
 			System.out.println("driver loaded");
 		} catch (ClassNotFoundException ex) {
 			System.err.println(ex);
+			ex.printStackTrace();
 		} catch (InstantiationException ex) {
 			System.err.println(ex);
+			ex.printStackTrace();
 		} catch (IllegalAccessException ex) {
 			System.err.println(ex);
+			ex.printStackTrace();
 		}
 		// Connection
 		try {
@@ -74,11 +78,12 @@ public class DBConnectionManager implements Constants {
 			}
 		} catch (SQLException ex) {
 			System.out.println("SQLException: " + ex.getMessage());
+			ex.printStackTrace();
 		}
 		return done;
 	}
 
-	private static void loadDBProperties() {
+	private void loadDBProperties() {
 		dbProp = new Properties();
 		try {
 			dbProp.load(DBConnectionManager.class.getClassLoader()
@@ -88,7 +93,7 @@ public class DBConnectionManager implements Constants {
 		}
 	}
 
-	private static String getDBProperty(String key) {
+	private String getDBProperty(String key) {
 		if (dbProp == null) {
 			loadDBProperties();
 		}

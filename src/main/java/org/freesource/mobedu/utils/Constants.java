@@ -41,12 +41,12 @@ public interface Constants {
 	// Standard Error Message reply
 	String DEFAULT_ERR_MSG = "Registration Failed, please try after sometime";
 
-	String DB4_TYPE = "db4free";
-	String DB4_NAME = "db4free.database";
-	String DB4_USER = "db4free.user";
-	String DB4_PASS = "db4free.pass";
-	String DB4_HOST = "db4free.host";
-	String DB4_PORT = "db4free.port";
+	String DB4_TYPE = "db_type";
+	String DB4_NAME = ".database";
+	String DB4_USER = ".user";
+	String DB4_PASS = ".pass";
+	String DB4_HOST = ".host";
+	String DB4_PORT = ".port";
 
 	String DB_PROP_FILE = "db.properties";
 	String STD_PROP_FILE = "std.properties";

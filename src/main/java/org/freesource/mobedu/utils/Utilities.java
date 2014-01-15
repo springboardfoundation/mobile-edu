@@ -41,7 +41,7 @@ public class Utilities implements Constants {
 		if (null == cl || cl.isEmpty()) {
 			String defaultStd = getStdProperty(DEFAULT_CLASS);
 			classMsg = "No class given for registration, taking " + defaultStd
-					+ "std as default.<br />";
+					+ " std as default.<br />";
 			return defaultStd;
 		}
 		String normalized = cl.trim().toLowerCase();
@@ -85,15 +85,11 @@ public class Utilities implements Constants {
 	}
 
 	public static String getListOfSupportedClass() {
-		String s = getStdProperty(SUPPORTED_STR_LIST);
-		log.debug("SUPPORTED_STR_LIST:" + s);
-		return s;
+		return getStdProperty(SUPPORTED_STR_LIST);
 	}
 
 	public static String getDefaultStdClass() {
-		String s = getStdProperty(DEFAULT_CLASS);
-		log.debug("DEFAULT_CLASS:" + s);
-		return s;
+		return getStdProperty(DEFAULT_CLASS);
 	}
 
 }

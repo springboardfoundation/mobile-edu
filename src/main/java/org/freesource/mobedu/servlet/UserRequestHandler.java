@@ -55,7 +55,7 @@ public class UserRequestHandler extends HttpServlet implements Constants {
 				return;
 			}
 
-			useService = new UserHandlerService(DB4_TYPE);
+			useService = new UserHandlerService();
 			// Get the message from the request parameter
 			String txtweb_message = request
 					.getParameter(HTTP_PARAM_TXTWEB_MESSAGE);
