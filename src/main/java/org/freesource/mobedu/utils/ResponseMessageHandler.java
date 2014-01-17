@@ -17,6 +17,8 @@ public class ResponseMessageHandler implements Constants {
 	public static void writeMessage(HttpServletRequest request,
 			HttpServletResponse response, String message) throws IOException {
 		PrintWriter out = response.getWriter();
+		// logging the response before writing
+		log.debug("Writing the response:" + message);
 
 		out.println("<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">");
 		out.println("<html>");
@@ -47,8 +49,7 @@ public class ResponseMessageHandler implements Constants {
 		out.println(message);
 		out.println("</body>");
 		out.println("</html>");
-		// A big NOTE: Closing the response to the web, nothing more can be
-		// written
+		// A big NOTE: Closing the response to web, nothing more can be written
 		out.close();
 		out.flush();
 	}

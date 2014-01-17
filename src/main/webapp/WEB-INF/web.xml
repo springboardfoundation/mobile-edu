@@ -20,7 +20,18 @@
 	</servlet-mapping>
 
 	<error-page>
+		<!-- Missing login -->
+		<error-code>404</error-code>
 		<location>/error.html</location>
+	</error-page>
+	<error-page>
+		<!-- Forbidden directory listing -->
+		<error-code>403</error-code>
+		<location>/error.html</location>
+	</error-page>
+	<error-page>
+		<!-- All other errors -->
+		<location>/defaulterror.html</location>
 	</error-page>
 
 	<welcome-file-list>
