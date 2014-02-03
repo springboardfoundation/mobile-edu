@@ -43,13 +43,9 @@ public class MessageHandlerService implements Constants {
 	public String sendMessageToAllUsers(HttpServletRequest req,
 			HttpServletResponse res, Message messageObject) {
 		StringBuilder message = new StringBuilder();
+		List<Users> users = null;
 		try {
-			List<Users> users = dm.getAllRegisteredUsers();
-			for (Users user : users) {
-				message.append(ResponseMessageHandler.getInstance(req, res)
-						.pushMessage(messageObject, user));
-				message.append("<br />");
-			}
+			users = dm.getAllRegisteredUsers();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			message.append("SQLException occurred when getting list of users..."
@@ -60,6 +56,19 @@ public class MessageHandlerService implements Constants {
 			message.append("MobileEduException occurred when getting list of users..."
 					+ e.getMessage());
 			return message.toString();
+		}
+		for (Users user : users) {
+			try {
+				message.append(ResponseMessageHandler.getInstance(req, res)
+						.pushMessage(messageObject, user));
+				message.append("<br />");
+
+			} catch (MobileEduException e) {
+				e.printStackTrace();
+				message.append("MobileEduException occurred: " + e.getMessage()
+						+ " when processing the user: " + user.getContextId());
+				message.append("<br />");
+			}
 		}
 		// log.debug("Message Handler response: " + message);
 		return message.toString();

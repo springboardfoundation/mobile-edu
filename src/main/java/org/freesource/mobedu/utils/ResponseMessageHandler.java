@@ -128,7 +128,7 @@ public class ResponseMessageHandler implements Constants {
 	 * -1 Unknown Exception(Usually Server side) Have a retry logic in place to
 	 * call the API again in case such an error code is received or wait till
 	 * the APIs are back to being functional. <br />
-	 * -3 Invalid input Incorrect format for calling the API Ð Check the right
+	 * -3 Invalid input Incorrect format for calling the API Check the right
 	 * syntax for making the API call <br />
 	 * -101 No such mobile mobile number does not exist <br />
 	 * -103 MAX Publisher Allocation exceeded No more than 250 messages per 5
