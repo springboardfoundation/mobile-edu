@@ -1,6 +1,6 @@
 spool MessageAsset.lst
 
-CREATE OR REPLACE TABLE MESSAGE_ASSET
+CREATE TABLE MESSAGE_ASSET
 (
   MSG_ID INT, /* Internal primary key field */
   MESSAGE VARCHAR(500) NOT NULL, /* Main content - SMS to be sent */

@@ -1,5 +1,8 @@
 package org.freesource.mobedu.dao;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 /**
  * The main user class to store the attributes of a user
  * 
@@ -46,7 +49,12 @@ public class Users {
 	 *            the mobileId to set
 	 */
 	public final void setMobileId(String mobileId) {
-		this.mobileId = mobileId;
+		try {
+			this.mobileId = URLEncoder.encode(mobileId, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			this.mobileId = mobileId;
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -138,6 +146,14 @@ public class Users {
 	}
 
 	/**
+	 * SMS: 1000 <br />
+	 * USSD: 1001 <br />
+	 * WEB: 200x <br />
+	 * EMULATOR: 2100 <br />
+	 * INSTANT MESSENGER: 220x <br />
+	 * MISSED CALL:1002 <br />
+	 * ANDROID: 3000 <br />
+	 * 
 	 * @param protocol
 	 *            the protocol to set
 	 */

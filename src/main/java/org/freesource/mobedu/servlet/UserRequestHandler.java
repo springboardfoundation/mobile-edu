@@ -18,7 +18,7 @@ import org.freesource.mobedu.utils.Utilities;
 
 /**
  * This servlet is used to store the information of any user who registers to
- * the service. The default registration is for 10th.
+ * the service.
  */
 @SuppressWarnings("serial")
 public class UserRequestHandler extends HttpServlet implements Constants {
@@ -39,7 +39,7 @@ public class UserRequestHandler extends HttpServlet implements Constants {
 		try {
 			UserHandlerService useService;
 			// Buffer to contain the response to be sent back to the user
-			StringBuffer txtWebResponse = new StringBuffer();
+			StringBuilder txtWebResponse = new StringBuilder();
 
 			// Assign to global variables so that other fucntions can use it
 			request = req;
@@ -62,8 +62,8 @@ public class UserRequestHandler extends HttpServlet implements Constants {
 
 			if (!useService.validatePopulateUser(regUser, mobileHash,
 					txtweb_message)) {
-				ResponseMessageHandler.writeMessage(request, response,
-						useService.getMessage());
+				ResponseMessageHandler.getInstance(request, response)
+						.writeMessage(useService.getMessage());
 				return;
 			}
 			// Populate protocol
@@ -84,23 +84,18 @@ public class UserRequestHandler extends HttpServlet implements Constants {
 			} else { // Handle start/register request here
 				txtWebResponse.append(useService.startService(regUser));
 			}
-			/*
-			 * On closing the DB connections, subsequent calls are getting error
-			 * mysql.jdbc.exceptions.jdbc4.MySQLNonTransientConnectionException
-			 * : No operations allowed after connection closed.
-			 */
-			// useService.closeConnections();
-			ResponseMessageHandler.writeMessage(request, response,
+
+			ResponseMessageHandler.getInstance(request, response).writeMessage(
 					txtWebResponse.toString());
 		} catch (MobileEduException e) {
 			log.debug(e.getMessage());
-			ResponseMessageHandler.writeMessage(request, response,
-					DEFAULT_ERR_MSG);
+			ResponseMessageHandler.getInstance(request, response).writeMessage(
+					DEFAULT_REGISTRATION_ERR_MSG);
 			return;
 		} catch (IOException e) {
 			log.debug(e.getMessage());
-			ResponseMessageHandler.writeMessage(request, response,
-					DEFAULT_ERR_MSG);
+			ResponseMessageHandler.getInstance(request, response).writeMessage(
+					DEFAULT_REGISTRATION_ERR_MSG);
 		}
 	}
 
@@ -113,14 +108,14 @@ public class UserRequestHandler extends HttpServlet implements Constants {
 	 *            - StringBuffer to append the response and send to the user
 	 * @throws IOException
 	 */
-	private void replyForValidStd(StringBuffer txtWebResponse)
+	private void replyForValidStd(StringBuilder txtWebResponse)
 			throws IOException {
 
 		txtWebResponse.append("Invalid option selected. ");
 		txtWebResponse.append("Please select one from the given list:<br />"
 				+ Utilities.getListOfSupportedClass());
 		txtWebResponse.append("<br /> Eg: @sioguide 10th");
-		ResponseMessageHandler.writeMessage(request, response,
+		ResponseMessageHandler.getInstance(request, response).writeMessage(
 				txtWebResponse.toString());
 	}
 
@@ -134,7 +129,7 @@ public class UserRequestHandler extends HttpServlet implements Constants {
 	private void respondToRegisterRequest() throws IOException {
 		// This has been moved to a separate method so that it can be changed in
 		// future to forward to a different page, if required
-		ResponseMessageHandler.writeMessage(request, response,
+		ResponseMessageHandler.getInstance(request, response).writeMessage(
 				"Application Registration Message");
 		return;
 	}

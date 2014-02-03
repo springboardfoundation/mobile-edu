@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
+<web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 
@@ -8,19 +8,52 @@
 	<description>
         SMS App to msg tips to registered students
     </description>
-
+	<!-- Mapping for the JSP to submit SMS-message -->
 	<servlet>
-		<servlet-name>NewUser</servlet-name>
+		<servlet-name>smsPage</servlet-name>
+		<jsp-file>/submitsms.jsp</jsp-file>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>smsPage</servlet-name>
+		<url-pattern>/submitMessage</url-pattern>
+	</servlet-mapping>
+
+	<!-- Mapping for servlet handling registration of a new user -->
+	<servlet>
+		<servlet-name>userServlet</servlet-name>
 		<servlet-class>org.freesource.mobedu.servlet.UserRequestHandler</servlet-class>
 	</servlet>
 
 	<servlet-mapping>
-		<servlet-name>NewUser</servlet-name>
+		<servlet-name>userServlet</servlet-name>
 		<url-pattern>/registerUser</url-pattern>
 	</servlet-mapping>
 
+	<!-- Mapping for servlet sending submitted SMS to registered users -->
+	<servlet>
+		<servlet-name>smsServlet</servlet-name>
+		<servlet-class>org.freesource.mobedu.servlet.MessageRequestHandler</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>smsServlet</servlet-name>
+		<url-pattern>/sendSMS</url-pattern>
+	</servlet-mapping>
+
+	<!-- Mapping for test servlet sending SMS to registered users -->
+	<servlet>
+		<servlet-name>testServlet</servlet-name>
+		<servlet-class>org.freesource.mobedu.servlet.TestRequestHandler</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>testServlet</servlet-name>
+		<url-pattern>/test</url-pattern>
+	</servlet-mapping>
+
 	<error-page>
-		<!-- Missing login -->
+		<!-- Missing login? -->
 		<error-code>404</error-code>
 		<location>/error.html</location>
 	</error-page>

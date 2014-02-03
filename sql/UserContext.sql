@@ -1,6 +1,6 @@
 ﻿spool UserContext.lst
 
-CREATE OR REPLACE TABLE USER_CONTEXT
+CREATE TABLE USER_CONTEXT
 (
   CONTEXT_ID INT, /* Internal primary key field */
   MOBILE_HASH VARCHAR(50) NOT NULL, /* Mobile number hash as received */

@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Properties;
 
 import org.freesource.mobedu.dao.Users;
@@ -113,6 +114,11 @@ public class DBConnectionManager implements Constants {
 	public Users updateUser(Users existingUser) throws SQLException,
 			MobileEduException {
 		return theDBA.updateUserDetails(existingUser);
+	}
+
+	public List<Users> getAllRegisteredUsers() throws SQLException,
+			MobileEduException {
+		return theDBA.getListOfRegisteredUsers();
 	}
 
 	/**

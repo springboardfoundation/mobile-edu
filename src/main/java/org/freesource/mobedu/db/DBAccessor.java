@@ -4,6 +4,7 @@
 package org.freesource.mobedu.db;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import org.freesource.mobedu.dao.Users;
 import org.freesource.mobedu.utils.MobileEduException;
@@ -16,7 +17,5 @@ public interface DBAccessor {
 	Users saveUser(Users user) throws SQLException, MobileEduException;
 	Users getUser(String txtMobileHash) throws SQLException, MobileEduException;
 	Users updateUserDetails(Users user) throws SQLException, MobileEduException;
-	Users updateUserStd(Users user) throws SQLException, MobileEduException;
-	Users activateUser(Users user) throws SQLException, MobileEduException;
-	Users deActivateUser(Users user) throws SQLException, MobileEduException;
+	List<Users> getListOfRegisteredUsers()  throws SQLException, MobileEduException;
 }

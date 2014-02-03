@@ -112,10 +112,10 @@ public class UserHandlerService implements Constants {
 			dm.saveNewUser(user);
 		} catch (MobileEduException e) {
 			e.printStackTrace();
-			return DEFAULT_ERR_MSG;
+			return DEFAULT_REGISTRATION_ERR_MSG;
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return DEFAULT_ERR_MSG;
+			return DEFAULT_REGISTRATION_ERR_MSG;
 		}
 		message.append(Utilities.getStdReplyMessage());
 

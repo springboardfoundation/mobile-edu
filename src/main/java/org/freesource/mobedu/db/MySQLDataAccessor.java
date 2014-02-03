@@ -8,6 +8,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.freesource.mobedu.dao.Users;
 import org.freesource.mobedu.utils.Constants;
@@ -53,8 +55,6 @@ public class MySQLDataAccessor implements DBAccessor, Constants {
 					"MySQLDataAccessor: Unable to get the value for next CONTEXT_ID from table: USER_CONTEXT.");
 		}
 
-		// String Q_INSERT_NEW_USER =
-		// "INSERT INTO USER_CONTEXT (CONTEXT_ID, MOBILE_HASH, REG_STD, REG_SUB, REG_DATE, IS_ACTIVE, LOCATION, PROTOCOL) VALUES (?, ?, ?, ?, ?, ?, ?)";
 		// Allocate a "PreparedStatement" object in the Connection
 		PreparedStatement pstmt = thisConn.prepareStatement(Q_INSERT_NEW_USER);
 
@@ -148,8 +148,6 @@ public class MySQLDataAccessor implements DBAccessor, Constants {
 
 	public Users updateUserDetails(Users user) throws SQLException,
 			MobileEduException {
-		// UPDATE USER_CONTEXT SET REG_STD = ?, REG_SUB = ?, REG_DATE = ?,
-		// IS_ACTIVE = ?, LOCATION = ?, PROTOCOL = ? WHERE CONTEXT_ID = ?
 		PreparedStatement pstmt = thisConn
 				.prepareStatement(Q_UPDATE_USER_WITH_ID);
 
@@ -178,21 +176,38 @@ public class MySQLDataAccessor implements DBAccessor, Constants {
 		return user;
 	}
 
-	public Users updateUserStd(Users user) throws SQLException,
+	public List<Users> getListOfRegisteredUsers() throws SQLException,
 			MobileEduException {
-		// TODO Auto-generated method stub
-		return null;
+		List<Users> allUsers = new ArrayList<Users>();
+		Statement stmt = thisConn.createStatement();
+		String strSelect = Q_SELECT_ALL_ACTIVE_USERS;
+		log.debug("All users select SQL query is: " + strSelect);
+
+		// Execute the query and iterate full result set to get all users, add
+		// all uses to the list, exception thrown if no users found
+		ResultSet rset = stmt.executeQuery(strSelect);
+		while (rset.next()) {
+			Users user = new Users();
+			user.setContextId(rset.getInt("CONTEXT_ID"));
+			user.setMobileId(rset.getString("MOBILE_HASH"));
+			user.setRegStandard(rset.getString("REG_STD"));
+			user.setRegSubject(rset.getString("REG_SUB"));
+			user.setRegDate(rset.getString("REG_DATE"));
+			if (rset.getBoolean("IS_ACTIVE")) {
+				user.activateUser();
+			} else {
+				user.deActivateUser();
+			}
+			user.setLocation(rset.getString("LOCATION"));
+			user.setProtocol(rset.getString("PROTOCOL"));
+			allUsers.add(user);
+		}
+		stmt.close();
+		if(allUsers.isEmpty()){
+			throw new MobileEduException(
+					"Getting List of Users: No registered users found");
+		}
+		return allUsers;
 	}
 
-	public Users activateUser(Users user) throws SQLException,
-			MobileEduException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Users deActivateUser(Users user) throws SQLException,
-			MobileEduException {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

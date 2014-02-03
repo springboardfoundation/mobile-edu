@@ -41,6 +41,11 @@ public class MobileEduException extends Exception {
 		errorMsg = msg;
 	}
 
+	public MobileEduException(String msg, Throwable e) {
+		super(msg, e);
+		errorMsg = msg;
+	}
+
 	@Override
 	public String toString() {
 		return "MobileEdu - Exception [Erro Code=" + errorCode
