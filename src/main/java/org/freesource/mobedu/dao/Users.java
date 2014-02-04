@@ -2,6 +2,7 @@ package org.freesource.mobedu.dao;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.sql.Date;
 
 /**
  * The main user class to store the attributes of a user
@@ -13,7 +14,7 @@ public class Users {
 	private String mobileId;
 	private String regStd;
 	private String regSubject;
-	private String regDate;
+	private Date regDate;
 	private boolean active;
 	private String location;
 	private String protocol;
@@ -88,17 +89,17 @@ public class Users {
 	}
 
 	/**
-	 * @return the regDate
+	 * @return the registration date to set in java.sql.Date format
 	 */
-	public final String getRegDate() {
+	public final Date getRegDate() {
 		return regDate;
 	}
 
 	/**
 	 * @param regDate
-	 *            the regDate to set
+	 *            the registration date to set in java.sql.Date format
 	 */
-	public final void setRegDate(String regDate) {
+	public final void setRegDate(Date regDate) {
 		this.regDate = regDate;
 	}
 

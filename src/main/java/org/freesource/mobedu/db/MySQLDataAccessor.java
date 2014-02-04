@@ -63,7 +63,7 @@ public class MySQLDataAccessor implements DBAccessor, Constants {
 		pstmt.setString(3, user.getRegStandard()); // REG_STD
 		pstmt.setString(4, user.getRegSubject()); // REG_SUB
 
-		pstmt.setString(5, user.getRegDate()); // REG_DATE
+		pstmt.setDate(5, user.getRegDate()); // REG_DATE
 		if (user.isActive())// IS_ACTIVE
 			pstmt.setBoolean(6, true);
 		else
@@ -115,7 +115,7 @@ public class MySQLDataAccessor implements DBAccessor, Constants {
 			user.setMobileId(rset.getString("MOBILE_HASH"));
 			user.setRegStandard(rset.getString("REG_STD"));
 			user.setRegSubject(rset.getString("REG_SUB"));
-			user.setRegDate(rset.getString("REG_DATE"));
+			user.setRegDate(rset.getDate("REG_DATE"));
 			if (rset.getBoolean("IS_ACTIVE")) {
 				user.activateUser();
 			} else {
@@ -153,7 +153,7 @@ public class MySQLDataAccessor implements DBAccessor, Constants {
 
 		pstmt.setString(1, user.getRegStandard()); // REG_STD
 		pstmt.setString(2, user.getRegSubject()); // REG_SUB
-		pstmt.setString(3, user.getRegDate()); // REG_DATE
+		pstmt.setDate(3, user.getRegDate()); // REG_DATE
 		if (user.isActive())// IS_ACTIVE
 			pstmt.setBoolean(4, true);
 		else
@@ -192,7 +192,7 @@ public class MySQLDataAccessor implements DBAccessor, Constants {
 			user.setMobileId(rset.getString("MOBILE_HASH"));
 			user.setRegStandard(rset.getString("REG_STD"));
 			user.setRegSubject(rset.getString("REG_SUB"));
-			user.setRegDate(rset.getString("REG_DATE"));
+			user.setRegDate(rset.getDate("REG_DATE"));
 			if (rset.getBoolean("IS_ACTIVE")) {
 				user.activateUser();
 			} else {

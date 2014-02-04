@@ -82,7 +82,8 @@ public class UserHandlerService implements Constants {
 		}
 		user.setRegStandard(Utilities.getStdClass(arguments));
 		user.setRegSubject("all");
-		user.setRegDate(Utilities.getCurrentTimestamp());
+		user.setRegDate(new java.sql.Date(Utilities.getCurrentTimestamp()
+				.getTime()));
 		user.activateUser();
 		setUserLocation(user);
 

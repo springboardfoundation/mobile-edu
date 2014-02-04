@@ -6,9 +6,11 @@ package org.freesource.mobedu.utils;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.TimeZone;
@@ -72,10 +74,18 @@ public class Utilities implements Constants {
 		return classMsg;
 	}
 
-	public static final String getCurrentTimestamp() {
+	public static final Date getCurrentTimestamp() {
 		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
-		String d = new SimpleDateFormat("yyyy-MM-DD HH:mm:ss").format(c
-				.getTime());
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-DD HH:mm:ss");
+		//.format(c.getTime());
+		Date d;
+		try {
+			d = formatter.parse(formatter.format(c.getTime()));
+		} catch (ParseException e) {
+			log.debug("Error occurred when executing: getCurrentTimestamp");
+			e.printStackTrace();
+			d = new Date();
+		}
 		return d;
 	}
 

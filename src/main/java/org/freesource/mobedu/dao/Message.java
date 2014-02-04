@@ -1,14 +1,13 @@
 package org.freesource.mobedu.dao;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
+import java.sql.Date;
 
 public class Message {
 	private int messageId;
 	private String message;
 	private String standard;
 	private String subject;
-	private String insertDate;
+	private Date insertDate;
 	private String sentDate;
 	private boolean active;
 
@@ -43,12 +42,8 @@ public class Message {
 	 *            the message to set
 	 */
 	public void setMessage(String message) {
-		try {
-			this.message = URLEncoder.encode(message, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			this.message = message;
-			e.printStackTrace();
-		}
+		this.message = message;
+		// this.message = URLEncoder.encode(message, "UTF-8");
 	}
 
 	/**
@@ -84,7 +79,7 @@ public class Message {
 	/**
 	 * @return the insertDate
 	 */
-	public String getInsertDate() {
+	public Date getInsertDate() {
 		return insertDate;
 	}
 
@@ -92,7 +87,7 @@ public class Message {
 	 * @param insertDate
 	 *            the insertDate to set
 	 */
-	public void setInsertDate(String insertDate) {
+	public void setInsertDate(Date insertDate) {
 		this.insertDate = insertDate;
 	}
 
