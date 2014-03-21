@@ -18,12 +18,12 @@ import org.freesource.mobedu.utils.ResponseMessageHandler;
  * This servlet is used to send the message to registered users.
  */
 @SuppressWarnings("serial")
-public class MessageRequestHandler extends HttpServlet implements Constants {
+public class MessageRequestHandlerServlet extends HttpServlet implements Constants {
 
 	/**
 	 * Initialize the class objects
 	 */
-	public MessageRequestHandler() {
+	public MessageRequestHandlerServlet() {
 	}
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response)

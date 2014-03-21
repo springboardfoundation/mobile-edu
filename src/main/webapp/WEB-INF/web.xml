@@ -7,7 +7,7 @@
 	<display-name>Mobile Education Application</display-name>
 	<description>
         SMS App to msg tips to registered students
-    </description>
+	</description>
 	<!-- Mapping for the JSP to submit SMS-message -->
 	<servlet>
 		<servlet-name>smsPage</servlet-name>
@@ -22,7 +22,7 @@
 	<!-- Mapping for servlet handling registration of a new user -->
 	<servlet>
 		<servlet-name>userServlet</servlet-name>
-		<servlet-class>org.freesource.mobedu.servlet.UserRequestHandler</servlet-class>
+		<servlet-class>org.freesource.mobedu.servlet.UserRequestHandlerServlet</servlet-class>
 	</servlet>
 
 	<servlet-mapping>
@@ -33,7 +33,7 @@
 	<!-- Mapping for servlet sending submitted SMS to registered users -->
 	<servlet>
 		<servlet-name>smsServlet</servlet-name>
-		<servlet-class>org.freesource.mobedu.servlet.MessageRequestHandler</servlet-class>
+		<servlet-class>org.freesource.mobedu.servlet.MessageRequestHandlerServlet</servlet-class>
 	</servlet>
 
 	<servlet-mapping>
@@ -41,7 +41,7 @@
 		<url-pattern>/sendSMS</url-pattern>
 	</servlet-mapping>
 
-	<!-- Mapping for test servlet sending SMS to registered users -->
+	<!-- A test servlet -->
 	<servlet>
 		<servlet-name>testServlet</servlet-name>
 		<servlet-class>org.freesource.mobedu.servlet.TestRequestHandler</servlet-class>
@@ -75,4 +75,4 @@
 		<welcome-file>default.htm</welcome-file>
 		<welcome-file>default.jsp</welcome-file>
 	</welcome-file-list>
-</web-app> 
+</web-app>

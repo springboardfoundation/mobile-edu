@@ -21,12 +21,12 @@ import org.freesource.mobedu.utils.Utilities;
  * the service.
  */
 @SuppressWarnings("serial")
-public class UserRequestHandler extends HttpServlet implements Constants {
+public class UserRequestHandlerServlet extends HttpServlet implements Constants {
 
 	/**
 	 * Initialize the class objects
 	 */
-	public UserRequestHandler() {
+	public UserRequestHandlerServlet() {
 		regUser = new Users();
 	}
 

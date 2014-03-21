@@ -52,7 +52,7 @@ public class MessageHandlerService implements Constants {
 					+ e.getMessage());
 			return message.toString();
 		} catch (MobileEduException e) {
-			e.printStackTrace();
+			// e.printStackTrace();
 			message.append("MobileEduException occurred when getting list of users..."
 					+ e.getMessage());
 			return message.toString();
@@ -64,7 +64,7 @@ public class MessageHandlerService implements Constants {
 				message.append("<br />");
 
 			} catch (MobileEduException e) {
-				e.printStackTrace();
+				// e.printStackTrace();
 				message.append("MobileEduException occurred: " + e.getMessage()
 						+ " when processing the user: " + user.getContextId());
 				message.append("<br />");
