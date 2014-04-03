@@ -45,9 +45,11 @@ public class MessageHandlerService implements Constants {
 		StringBuilder message = new StringBuilder();
 		List<Users> users = null;
 		try {
+			// log.debug("Getting list of all users from dB");
 			users = dm.getAllRegisteredUsers();
+			// log.debug("Got " + users.size() + " number of users from dB");
 		} catch (SQLException e) {
-			e.printStackTrace();
+			// e.printStackTrace();
 			message.append("SQLException occurred when getting list of users..."
 					+ e.getMessage());
 			return message.toString();
@@ -59,8 +61,10 @@ public class MessageHandlerService implements Constants {
 		}
 		for (Users user : users) {
 			try {
-				message.append(ResponseMessageHandler.getInstance(req, res)
-						.pushMessage(messageObject, user));
+				// log.debug("Sending for user: " + user.getContextId());
+				String response = ResponseMessageHandler.getInstance(req, res)
+						.pushMessage(messageObject, user);
+				message.append("Response=>" + response);
 				message.append("<br />");
 
 			} catch (MobileEduException e) {
@@ -96,7 +100,7 @@ public class MessageHandlerService implements Constants {
 		try {
 			dm.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			// e.printStackTrace();
 			throw new MobileEduException(e.getErrorCode() + "", e.getMessage());
 		}
 	}

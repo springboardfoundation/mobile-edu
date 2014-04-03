@@ -36,14 +36,30 @@ public class ResponseMessageHandler implements Constants {
 
 	private static HttpServletRequest request;
 	private static HttpServletResponse response;
-	private static ResponseMessageHandler thisObj;
+	private static volatile ResponseMessageHandler thisObj;
 
+	/**
+	 * A singleton pattern object being created as there is no need for multiple
+	 * instances of this object on the same request/response combination
+	 * @param req
+	 * @param res
+	 * @return
+	 */
 	public static ResponseMessageHandler getInstance(HttpServletRequest req,
 			HttpServletResponse res) {
-		request = req;
-		response = res;
-		thisObj = new ResponseMessageHandler();
-		return thisObj;
+		ResponseMessageHandler rmh = thisObj;
+		if (null == rmh) {
+			synchronized (ResponseMessageHandler.class) {
+				rmh = thisObj;
+				if (null == rmh) {
+					request = req;
+					response = res;
+					thisObj = new ResponseMessageHandler();
+					rmh = thisObj;
+				}
+			}
+		}
+		return rmh;
 	}
 
 	public void writeMessage(String message) throws IOException {
@@ -96,13 +112,14 @@ public class ResponseMessageHandler implements Constants {
 		if (message == null) {
 			message = "";
 		}
+		// log.debug("Mobile: " + mobileHash + " Message: " + message);
 
 		StringBuilder reply = new StringBuilder();
 		reply.append("Push message to User: " + userObj.getContextId());
 		int result = sendPushMessage(message, mobileHash);
 
 		if (result == 0) {
-			reply.append(".<br/> Message sent successfully!");
+			reply.append(" sent successfully!");
 		}
 		// try again after waiting for some time
 		else if (result == -1) {
@@ -111,7 +128,7 @@ public class ResponseMessageHandler implements Constants {
 				; // To wait for sometime before retrying
 			result = sendPushMessage(message, mobileHash);
 			if (result == 0) {
-				reply.append("Message sent successfully on retry!");
+				reply.append(" sent successfully on retry!");
 			} else {
 				reply.append("Result after trying again " + result);
 			}
@@ -178,7 +195,7 @@ public class ResponseMessageHandler implements Constants {
 			// Using DOM parser to parse the XML response from the API
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 			DocumentBuilder db = dbf.newDocumentBuilder();
-			// Local Testing URL: LOCAL_PUSH_MSG_URL
+			// Testing URL: LOCAL_PUSH_MSG_URL and actual: PUSH_MSG_URL
 			URLConnection conn = new URL(PUSH_MSG_URL).openConnection();
 			conn.setDoOutput(true);
 			OutputStreamWriter wr = new OutputStreamWriter(
@@ -199,7 +216,7 @@ public class ResponseMessageHandler implements Constants {
 				if (childNode.getNodeType() == Node.ELEMENT_NODE) {
 					Element element = (Element) childNode;
 					code = getTagValue("code", element);
-					log.debug("Response Code: " + code);
+					// log.debug("Response Code: " + code);
 					return Integer.parseInt(code);
 				}
 			}

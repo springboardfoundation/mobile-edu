@@ -40,7 +40,7 @@ public class DBConnectionManager implements Constants {
 			throw new MobileEduException("Unable to get DB connection!");
 		}
 		theDBA = MySQLDataAccessor.getInstance(conn);
-		System.out.println("Success in connecting to the DB");
+		// log.debug("Success in connecting to the DB");
 	}
 
 	private String getDB4_URI() {
@@ -59,7 +59,7 @@ public class DBConnectionManager implements Constants {
 		// load driver
 		try {
 			Class.forName(dbClass).newInstance();
-			System.out.println("driver loaded");
+			// log.debug("driver loaded");
 		} catch (ClassNotFoundException ex) {
 			System.err.println(ex);
 			ex.printStackTrace();
@@ -74,7 +74,7 @@ public class DBConnectionManager implements Constants {
 		try {
 			if (null == conn || !conn.isValid(DB_VALID_CHECK_TIMEOUT)) {
 				conn = DriverManager.getConnection(uri, user, pass);
-				System.out.println("connected");
+				// log.debug("connected");
 				done = true;
 			}
 		} catch (SQLException ex) {

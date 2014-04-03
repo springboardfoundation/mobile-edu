@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.freesource.mobedu.dao.Message;
 import org.freesource.mobedu.services.MessageHandlerService;
 import org.freesource.mobedu.utils.Constants;
+import org.freesource.mobedu.utils.MobileEduException;
 import org.freesource.mobedu.utils.ResponseMessageHandler;
 
 /**
@@ -35,7 +36,7 @@ public class MessageRequestHandlerServlet extends HttpServlet implements Constan
 
 			// Get the message from the request
 			String message = request.getParameter(HTTP_PARAM_MESSAGE);
-			log.debug("Message: " + message);
+			// log.debug("Sending Message: " + message);
 			// What if there is no mobile hash?
 			// Means the request is from txt-web to register the app
 			if (null == message || message.isEmpty()) {
@@ -47,9 +48,16 @@ public class MessageRequestHandlerServlet extends HttpServlet implements Constan
 				webResponse.append(messageService.sendMessageToAllUsers(
 						request, response, m));
 			}
+			// log.debug("Writing the response: " + webResponse.toString());
 			ResponseMessageHandler.getInstance(request, response).writeMessage(
 					webResponse.toString());
-		} catch (Exception e) {
+		}
+		catch (MobileEduException e) {
+			String errMsg = "MobileEduException thrown in the server:" + e.getMessage();
+			// log.debug(errMsg);
+			ResponseMessageHandler.getInstance(request, response).writeMessage(errMsg);
+		}
+		catch (Exception e) {
 			log.debug(e.getMessage());
 		}
 	}
