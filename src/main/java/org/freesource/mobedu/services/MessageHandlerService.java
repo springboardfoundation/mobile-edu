@@ -47,7 +47,7 @@ public class MessageHandlerService implements Constants {
 		try {
 			// log.debug("Getting list of all users from dB");
 			users = dm.getAllRegisteredUsers();
-			// log.debug("Got " + users.size() + " number of users from dB");
+			log.debug("Got " + users.size() + " number of users from dB");
 		} catch (SQLException e) {
 			// e.printStackTrace();
 			message.append("SQLException occurred when getting list of users..."

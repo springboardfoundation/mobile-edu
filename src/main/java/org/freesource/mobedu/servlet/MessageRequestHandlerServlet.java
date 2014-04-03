@@ -48,7 +48,7 @@ public class MessageRequestHandlerServlet extends HttpServlet implements Constan
 				webResponse.append(messageService.sendMessageToAllUsers(
 						request, response, m));
 			}
-			// log.debug("Writing the response: " + webResponse.toString());
+			log.debug("Writing the response: " + webResponse.toString());
 			ResponseMessageHandler.getInstance(request, response).writeMessage(
 					webResponse.toString());
 		}

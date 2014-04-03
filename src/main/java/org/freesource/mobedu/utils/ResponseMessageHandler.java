@@ -112,7 +112,7 @@ public class ResponseMessageHandler implements Constants {
 		if (message == null) {
 			message = "";
 		}
-		// log.debug("Mobile: " + mobileHash + " Message: " + message);
+		log.debug("pushMessage> Mobile: " + mobileHash + " Message: " + message);
 
 		StringBuilder reply = new StringBuilder();
 		reply.append("Push message to User: " + userObj.getContextId());
@@ -136,7 +136,7 @@ public class ResponseMessageHandler implements Constants {
 			throw new MobileEduException("Error occured!!! Error code : "
 					+ result);
 		}
-		// log.debug("Push Message response string: " + reply);
+		log.debug("Push Message response string: " + reply);
 		return reply.toString();
 	}
 
