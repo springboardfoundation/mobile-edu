@@ -112,7 +112,7 @@ public class ResponseMessageHandler implements Constants {
 		if (message == null) {
 			message = "";
 		}
-		log.debug("pushMessage> Mobile: " + mobileHash + " Message: " + message);
+		// log.debug("pushMessage> Mobile: " + mobileHash + " Message: " + message);
 
 		StringBuilder reply = new StringBuilder();
 		reply.append("Push message to User: " + userObj.getContextId());
