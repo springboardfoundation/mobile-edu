@@ -1,0 +1,26 @@
+TxtWeb Params that are sent in the request object:
+
+  What are the parameters that the platform sends to your application?
+  There are 5 parameters that the platform sends to an application viz:
+  txtweb-mobile: The mobile number of the end user in hash format
+  txtweb-message: Message sent by the end user
+  txtweb-id: Unique identifier for the message
+  txtweb-verifyid: The id used to verify the source. Check API documentation for more details
+  txtweb-protocol: The protocol through which the message was received:
+    SMS: 1000
+    USSD: 1001
+    WEB: 200x
+    EMULATOR: 2100
+    INSTANT MESSENGER: 220x
+    MISSED CALL:1002
+    ANDROID: 3000
+
+========Brief about Mobile Education=========
+With the wide-spread usage of the mobile phones, it has become  an omnipresent technology with everyone. Leveraging on this  fact, this forum intends to better education using the SMS  technology. For SMS no high-end mobiles are required, even basic  model mobile-phones support SMS, and no internet.<br /> Most  students fail the metric test or the 10th standard exam as they  are the first board (state-level) exams and after the failure  they drop education as it seems like a very huge barrier to  cross for further growth. Keeping this in mind here is a small  app to get exam tips on the mobile phone using SMS service.
+
+========Information on how to register to our service=========
+To register to our examination tips service send sms as: @sioguide 10th
+to: 92665 92665. Please note that currently we only support 10th standard for the tips. There is scope for future enhancement to expand for other grades also.
+
+========Disclaimer=========
+The group of "Technology for Society" is a group of independent and self-motivated group of people involved by self interest in efforts to better the society. They  are not liable for any loss of life, property, or any other form  of physical or mental harm that occurs due to the use of the technology developed and listed above.
