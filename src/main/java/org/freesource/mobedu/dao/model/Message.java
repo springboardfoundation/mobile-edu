@@ -1,4 +1,4 @@
-package org.freesource.mobedu.dao;
+package org.freesource.mobedu.dao.model;
 
 import java.sql.Date;
 

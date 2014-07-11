@@ -1,25 +1,58 @@
-package org.freesource.mobedu.dao;
+package org.freesource.mobedu.dao.model;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.sql.Date;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.Length;
+
 /**
  * The main user class to store the attributes of a user
  * 
  */
-public class Users {
+@Entity
+@Table(name = "USER_CONTEXT")
+public class User {
 
+	@Id
+	// @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "CONTEXT_ID", nullable = false)
 	private int contextId;
+
+	@Length(max = 50, message = "Maximum size allowed for the mobile hash code is 50")
+	@NotNull(message = "Mobile Hash of the user cannot be null")
+	@Column(name = "MOBILE_HASH", nullable = false)
 	private String mobileId;
+
+	@Length(max = 5, message = "Maximum size allowed for resistered standard code string is 5")
+	@Column(name = "REG_STD")
 	private String regStd;
+
+	@Length(max = 10, message = "Maximum size allowed for registered standard code string is 10")
+	@Column(name = "REG_SUB")
 	private String regSubject;
+
+	@Column(name = "REG_DATE")
 	private Date regDate;
+
+	@Column(name = "IS_ACTIVE")
 	private boolean active;
+
+	@Length(max = 50, min = 0, message = "Maximum size allowed location string is 50!")
+	@Column(name = "LOCATION")
 	private String location;
+
+	@Length(max = 5, message = "Maximum size allowed for protocol string is 5")
+	@Column(name = "PROTOCOL")
 	private String protocol;
 
-	public Users() {
+	public User() {
 		active = false;
 	}
 
@@ -162,7 +195,22 @@ public class Users {
 		this.protocol = protocol;
 	}
 
-	public void copyUser(Users u) {
+	/**
+	 * Two User objects are equal if their mobile hash are the same. This
+	 * assumes that TxtWeb generates unique case in-sensitive mobile hash for
+	 * each mobile number.
+	 */
+	public boolean equals(Object obj) {
+		if (!(obj instanceof User)) {
+			return false;
+		}
+		if (((User) obj).getMobileId().equalsIgnoreCase(this.getMobileId())) {
+			return true;
+		}
+		return false;
+	}
+
+	public void copyUser(User u) {
 		this.contextId = u.getContextId();
 		this.mobileId = u.getMobileId();
 		this.regStd = u.getRegStandard();
@@ -171,5 +219,17 @@ public class Users {
 		this.active = u.isActive();
 		this.location = u.getLocation();
 		this.protocol = u.getProtocol();
+	}
+
+	public String toString() {
+		StringBuilder identity = new StringBuilder();
+		identity.append("Context ID:" + this.getContextId() + "::");
+		identity.append("Mobile Hash:" + this.getMobileId() + "::");
+		identity.append("Standard:" + this.getRegStandard() + "::");
+		identity.append("Subject:" + this.getRegSubject() + "::");
+		identity.append("Registration Date:" + this.getRegDate() + "::");
+
+		return identity.toString();
+
 	}
 }

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.freesource.mobedu.dao;
+package org.freesource.mobedu.dao.model;
 
 /**
  * The location class container to hold all the location attributes

@@ -14,6 +14,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.freesource.mobedu.db.DBConnectionManager;
+import org.freesource.mobedu.utils.MobileEduException;
+
 public class TestRequestHandler extends HttpServlet {
 
 	/**
@@ -23,6 +26,12 @@ public class TestRequestHandler extends HttpServlet {
 
 	public void init() throws ServletException {
 		// Do required initializations here
+		try {
+			DBConnectionManager.getInstance();
+		} catch (MobileEduException e) {
+			System.out.println("Exception in intilization of the DB Connection Manager");
+			e.printStackTrace();
+		}
 	}
 
 	public void service(HttpServletRequest request, HttpServletResponse response)

@@ -8,8 +8,14 @@ package org.freesource.mobedu.utils;
  */
 public interface Constants {
 
-	// Logger for logging
-	Logger log = Logger.getInstance("Mobile Education");
+	// Application level logger for logging
+	Logger appLogger = Logger.getInstance("Mobile Education");
+	String LOG_LEVEL = "LOGLEVEL";
+	String LOG_TRACE = "trace";
+	String LOG_DEBUG = "debug";
+	String LOG_ERROR = "error";
+	String LOG_INFO = "info";
+	
 	String CLASS_STR_LIST = "class_string_list";
 	String CLASS_INT_LIST = "class_number_list";
 	String SUPPORTED_STR_LIST = "supported_class_string_list";
@@ -37,6 +43,7 @@ public interface Constants {
 	String HTTP_PARAM_TXTWEB_PROTOCOL = "txtweb-protocol";
 	String HTTP_PARAM_PUBLISHER_KEY = "txtweb-pubkey";
 	String HTTP_PARAM_MESSAGE = "message";
+	String HTTP_PARAM_USER = "userid";
 
 	String SUCCESS_CODE = "0";
 

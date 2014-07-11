@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee"
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 
@@ -8,6 +8,10 @@
 	<description>
         SMS App to msg tips to registered students
 	</description>
+
+	<!-- <context-param> <param-name>contextConfigLocation</param-name> <param-value>classpath:SpringBeans.xml</param-value> 
+		</context-param> -->
+
 	<!-- Mapping for the JSP to submit SMS-message -->
 	<servlet>
 		<servlet-name>smsPage</servlet-name>
@@ -41,10 +45,26 @@
 		<url-pattern>/sendSMS</url-pattern>
 	</servlet-mapping>
 
+	<!-- Spring Servlet to handle rest calls -->
+	<servlet>
+		<servlet-name>dispatcher</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>classpath:SpringBeans.xml</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>dispatcher</servlet-name>
+		<url-pattern>/mobEdurest/*</url-pattern>
+	</servlet-mapping>
+
 	<!-- A test servlet -->
 	<servlet>
 		<servlet-name>testServlet</servlet-name>
 		<servlet-class>org.freesource.mobedu.servlet.TestRequestHandler</servlet-class>
+		<load-on-startup>1</load-on-startup>
 	</servlet>
 
 	<servlet-mapping>
@@ -62,10 +82,8 @@
 		<error-code>403</error-code>
 		<location>/error.html</location>
 	</error-page>
-	<error-page>
-		<!-- All other errors -->
-		<location>/defaulterror.html</location>
-	</error-page>
+	<!-- <error-page> All other errors <location>/defaulterror.html</location> 
+		</error-page> -->
 
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
