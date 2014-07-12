@@ -5,43 +5,71 @@ package org.freesource.mobedu.servlet;
 
 import java.io.IOException;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.freesource.mobedu.dao.Users;
-import org.freesource.mobedu.services.UserHandlerService;
+import org.freesource.mobedu.dao.UserManagerService;
+import org.freesource.mobedu.dao.model.User;
+import org.freesource.mobedu.db.DBConnectionManager;
 import org.freesource.mobedu.utils.Constants;
+import org.freesource.mobedu.utils.Logger;
 import org.freesource.mobedu.utils.MobileEduException;
 import org.freesource.mobedu.utils.ResponseMessageHandler;
 import org.freesource.mobedu.utils.Utilities;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * This servlet is used to store the information of any user who registers to
  * the service.
  */
+@Controller
+@RequestMapping(value = { "user" })
 @SuppressWarnings("serial")
 public class UserRequestHandlerServlet extends HttpServlet implements Constants {
+
+	private User regUser;
+	private HttpServletRequest request;
+	private HttpServletResponse response;
+	private UserManagerService userService;
+	private Logger log = Logger.getInstance("UserRequestHandlerServlet");
 
 	/**
 	 * Initialize the class objects
 	 */
-	public UserRequestHandlerServlet() {
-		regUser = new Users();
+	public void init() throws ServletException {
+		try {
+			userService = (UserManagerService) DBConnectionManager
+					.getInstance().getUserBean("userHandlerService");
+		} catch (MobileEduException e) {
+			e.printStackTrace();
+			throw new ServletException(e.getMessage(), e);
+		}
+		regUser = new User();
 	}
 
-	Users regUser;
-	HttpServletRequest request;
-	HttpServletResponse response;
+	@RequestMapping(value = "userCount", method = RequestMethod.GET)
+	public @ResponseBody
+	long getNumberOfUsers(HttpServletRequest req, HttpServletResponse res)
+			throws IOException, MobileEduException {
+		log.debug("Inside: getNumberOfUsers()");
+		userService = (UserManagerService) DBConnectionManager.getInstance()
+				.getUserBean("userHandlerService");
+		long count = userService.getNumberOfUser();
+		return count;
+	}
 
 	public void doGet(HttpServletRequest req, HttpServletResponse res)
 			throws IOException {
 		try {
-			UserHandlerService useService;
 			// Buffer to contain the response to be sent back to the user
 			StringBuilder txtWebResponse = new StringBuilder();
 
-			// Assign to global variables so that other fucntions can use it
+			// Assign to global variables so that other functions can use it
 			request = req;
 			response = res;
 			response.setContentType("text/html");
@@ -55,15 +83,16 @@ public class UserRequestHandlerServlet extends HttpServlet implements Constants 
 				return;
 			}
 
-			useService = new UserHandlerService();
+			userService = (UserManagerService) DBConnectionManager
+					.getInstance().getUserBean("userHandlerService");
 			// Get the message from the request parameter
 			String txtweb_message = request
 					.getParameter(HTTP_PARAM_TXTWEB_MESSAGE);
 
-			if (!useService.validatePopulateUser(regUser, mobileHash,
+			if (!userService.validatePopulateUser(regUser, mobileHash,
 					txtweb_message)) {
 				ResponseMessageHandler.getInstance(request, response)
-						.writeMessage(useService.getMessage());
+						.writeMessage(userService.getMessage());
 				return;
 			}
 			// Populate protocol
@@ -80,9 +109,9 @@ public class UserRequestHandlerServlet extends HttpServlet implements Constants 
 			// Handle the all service stop request here
 			if (null != txtweb_message
 					&& txtweb_message.equalsIgnoreCase(UNREGISTER)) {
-				txtWebResponse.append(useService.stopService(regUser));
+				txtWebResponse.append(userService.stopService(regUser));
 			} else { // Handle start/register request here
-				txtWebResponse.append(useService.startService(regUser));
+				txtWebResponse.append(userService.startService(regUser));
 			}
 
 			ResponseMessageHandler.getInstance(request, response).writeMessage(

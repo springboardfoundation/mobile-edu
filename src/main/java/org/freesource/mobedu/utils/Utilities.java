@@ -33,6 +33,7 @@ public class Utilities implements Constants {
 	private static String classMsg = "";
 	private static Properties stdProp = null;
 	private static List<String> listOfClass = new ArrayList<String>();
+	private static Logger log = Logger.getInstance("Utilities");
 
 	// Static block to populate the list of supported classes from the
 	// properties file.

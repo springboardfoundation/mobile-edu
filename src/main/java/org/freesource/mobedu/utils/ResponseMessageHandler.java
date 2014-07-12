@@ -18,8 +18,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.freesource.mobedu.dao.Message;
-import org.freesource.mobedu.dao.Users;
+import org.freesource.mobedu.dao.model.Message;
+import org.freesource.mobedu.dao.model.User;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -29,6 +29,8 @@ import org.xml.sax.SAXException;
 /**
  */
 public class ResponseMessageHandler implements Constants {
+	
+	private Logger log = Logger.getInstance("ResponseMessageHandler");
 
 	private ResponseMessageHandler() {
 		// Making this so that the use is forced to instantiate
@@ -65,7 +67,7 @@ public class ResponseMessageHandler implements Constants {
 	public void writeMessage(String message) throws IOException {
 		PrintWriter out = response.getWriter();
 		// logging the response before writing
-		// log.debug("Writing the response:" + message);
+		log.trace("Writing the response:" + message);
 
 		out.println("<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">");
 		out.println("<html>");
@@ -101,7 +103,7 @@ public class ResponseMessageHandler implements Constants {
 		out.flush();
 	}
 
-	public String pushMessage(Message messageObj, Users userObj)
+	public String pushMessage(Message messageObj, User userObj)
 			throws MobileEduException {
 		String mobileHash = userObj.getMobileId();
 		String message = messageObj.getMessage();
@@ -112,7 +114,7 @@ public class ResponseMessageHandler implements Constants {
 		if (message == null) {
 			message = "";
 		}
-		// log.debug("pushMessage> Mobile: " + mobileHash + " Message: " + message);
+		log.trace("pushMessage> Mobile: " + mobileHash + " Message: " + message);
 
 		StringBuilder reply = new StringBuilder();
 		reply.append("Push message to User: " + userObj.getContextId());
@@ -136,7 +138,7 @@ public class ResponseMessageHandler implements Constants {
 			throw new MobileEduException("Error occured!!! Error code : "
 					+ result);
 		}
-		log.debug("Push Message response string: " + reply);
+		log.trace("Push Message response string: " + reply);
 		return reply.toString();
 	}
 
@@ -191,12 +193,12 @@ public class ResponseMessageHandler implements Constants {
 					+ HTTP_PARAM_PUBLISHER_KEY + "="
 					+ URLEncoder.encode(TXT_PUBLISHER_ID, "UTF-8");
 
-			// log.debug("The push message being sent:" + urlParams);
+			log.trace("The push message being sent:" + urlParams);
 			// Using DOM parser to parse the XML response from the API
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 			DocumentBuilder db = dbf.newDocumentBuilder();
 			// Testing URL: LOCAL_PUSH_MSG_URL and actual: PUSH_MSG_URL
-			URLConnection conn = new URL(PUSH_MSG_URL).openConnection();
+			URLConnection conn = new URL(LOCAL_PUSH_MSG_URL).openConnection();
 			conn.setDoOutput(true);
 			OutputStreamWriter wr = new OutputStreamWriter(
 					conn.getOutputStream());
@@ -206,7 +208,7 @@ public class ResponseMessageHandler implements Constants {
 			// Reading the response
 			Document doc = db.parse(conn.getInputStream());
 			// Use the below for logging the response XML
-			// log.debug("The response for push message:");
+			log.trace("The response for push message:");
 			// Utilities.printXML(doc, System.out);
 
 			NodeList statusNodes = doc.getElementsByTagName("status");
@@ -216,7 +218,7 @@ public class ResponseMessageHandler implements Constants {
 				if (childNode.getNodeType() == Node.ELEMENT_NODE) {
 					Element element = (Element) childNode;
 					code = getTagValue("code", element);
-					// log.debug("Response Code: " + code);
+					log.debug("Response Code: " + code);
 					return Integer.parseInt(code);
 				}
 			}

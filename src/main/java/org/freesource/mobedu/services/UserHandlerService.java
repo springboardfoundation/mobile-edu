@@ -5,28 +5,36 @@ package org.freesource.mobedu.services;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.sql.SQLException;
+import java.util.List;
 
-import org.freesource.mobedu.dao.Users;
-import org.freesource.mobedu.db.DBConnectionManager;
+import org.freesource.mobedu.dao.UserDAO;
+import org.freesource.mobedu.dao.UserManagerService;
+import org.freesource.mobedu.dao.model.User;
 import org.freesource.mobedu.utils.Constants;
+import org.freesource.mobedu.utils.Logger;
 import org.freesource.mobedu.utils.MobileEduException;
 import org.freesource.mobedu.utils.Utilities;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
- *
+ * All user object management has to be put in this class
+ * 
  */
-public class UserHandlerService implements Constants {
+@Service
+public class UserHandlerService implements Constants, UserManagerService {
 
-	DBConnectionManager dm;
-	StringBuffer message;
+	@Autowired
+	private UserDAO userDAO;
+	private StringBuffer message;
 
+	private Logger log = Logger.getInstance("UserHandlerService");
 	/**
 	 * @throws MobileEduException
 	 * 
 	 */
 	public UserHandlerService() throws MobileEduException {
-		dm = new DBConnectionManager();
 		message = new StringBuffer();
 	}
 
@@ -34,7 +42,79 @@ public class UserHandlerService implements Constants {
 		return message.toString();
 	}
 
-	public boolean validatePopulateUser(Users user, String mobileHash,
+	/**
+	 * This method is used to insert a new user. Note that the user has to be
+	 * unique before being inserted. Use UserDAO.getUserById() to check if the
+	 * user exists before inserting.
+	 * 
+	 * @param user
+	 */
+	private void insertUser(User user) {
+		int nextContextId = userDAO.getMaxContextId();
+		if (-1 == nextContextId) {
+			nextContextId = 1;
+		} else {
+			nextContextId++;
+		}
+		user.setContextId(nextContextId);
+		userDAO.insertUser(user);
+	}
+
+	@Transactional
+	public void updateUser(User user) {
+		userDAO.update(user);
+	}
+
+	/**
+	 * Method to get the User object fetched from the DB based on the
+	 * Mobile-Hash as the key for the user
+	 * 
+	 * @param mobileHash
+	 * @return fetched User object
+	 */
+	private User getUserByMobileHash(String mobileHash) {
+		return userDAO.getUserByMobileHash(mobileHash);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.freesource.mobedu.dao.UserManagerService#getNumberOfUser()
+	 */
+	@Transactional
+	public long getNumberOfUser() {
+		return userDAO.getNumberOfUser();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.freesource.mobedu.dao.UserManagerService#getAllRegisteredUsers()
+	 */
+	@Transactional
+	public List<User> getAllRegisteredUsers() {
+		return userDAO.getUsers();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.freesource.mobedu.dao.UserManagerService#getUserById(int)
+	 */
+	@Transactional
+	public User getUserById(int userId) {
+		return userDAO.getUserById(userId);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.freesource.mobedu.dao.UserManagerService#validatePopulateUser(org
+	 * .freesource.mobedu .dao.model.User, String, String)
+	 */
+	@Transactional
+	public boolean validatePopulateUser(User user, String mobileHash,
 			String arguments) {
 		String[] args;
 		log.debug("Mobile Hash passed:" + mobileHash);
@@ -48,7 +128,7 @@ public class UserHandlerService implements Constants {
 			try {
 				arguments = URLDecoder.decode(arguments, "UTF-8");
 			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
+				log.error("Error occurred when decoding the arguments.", e);
 				message.append("Error occurred when decoding the arguments. "
 						+ "Please remove any special character in the message."
 						+ "<br />To register SMS @sioguide &#60;Class&#62; to "
@@ -95,7 +175,7 @@ public class UserHandlerService implements Constants {
 	 * 
 	 * @param user
 	 */
-	private void setUserLocation(Users user) {
+	private void setUserLocation(User user) {
 		// TODO Need to integrate with the Location service to get the location
 		// and put it in the user object
 		user.setLocation(null);
@@ -106,16 +186,13 @@ public class UserHandlerService implements Constants {
 	 * 
 	 * @param user
 	 */
-	public String saveUserToDB(Users user) {
+	public String saveUserToDB(User user) {
 		// Clear the message object to populate it with the results string
 		message.delete(0, message.length());
 		try {
-			dm.saveNewUser(user);
-		} catch (MobileEduException e) {
-			e.printStackTrace();
-			return DEFAULT_REGISTRATION_ERR_MSG;
-		} catch (SQLException e) {
-			e.printStackTrace();
+			insertUser(user);
+		} catch (Exception e) {
+			log.error(DEFAULT_REGISTRATION_ERR_MSG, e);
 			return DEFAULT_REGISTRATION_ERR_MSG;
 		}
 		message.append(Utilities.getStdReplyMessage());
@@ -136,59 +213,35 @@ public class UserHandlerService implements Constants {
 	 * @param user
 	 *            - The user object in which user will be returned if found
 	 * @return - TRUE if user is found, FALSE otherwise
+	 * @throws MobileEduException
+	 *             In case there is an exception when searching for existing
+	 *             user
 	 */
-	public boolean searchUser(String mobileHash, Users user) {
-		Users u;
+	public boolean searchUser(String mobileHash, User user)
+			throws MobileEduException {
+		User u;
 		try {
-			u = dm.searchForUser(mobileHash);
+			u = getUserByMobileHash(mobileHash);
 			if (null == u) {
 				return false;
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		} catch (MobileEduException e) {
-			e.printStackTrace();
-			return false;
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw new MobileEduException(e.getMessage(), e);
 		}
 		// User exists, hence assign to the passed object
 		user.copyUser(u);
 		return true;
 	}
 
-	/**
-	 * Handle all the stop service request. Below table illustrates the possible
-	 * options of a stop request by the user:
-	 * <table border="1">
-	 * <tr>
-	 * <th>User Exists</th>
-	 * <th>User IS ACTIVE</th>
-	 * <th>Action to be taken</th>
-	 * </tr>
-	 * <tr>
-	 * <td align="center">No</td>
-	 * <td align="center">---</td>
-	 * <td>Error: Not registered</td>
-	 * </tr>
-	 * </tr>
-	 * <tr>
-	 * <td align="center">Yes</td>
-	 * <td align="center">No</td>
-	 * <td>Error: Not registered</td>
-	 * </tr>
-	 * <tr>
-	 * <td align="center">Yes</td>
-	 * <td align="center">Yes</td>
-	 * <td>Success: Unregister</td>
-	 * </tr>
-	 * </table>
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param regUser
-	 *            - The user to be unregistered
-	 * @return String - The reply message to be sent
-	 * @throws MobileEduException
+	 * @see org.freesource.mobedu.dao.UserManagerService#stopService(org
+	 * .freesource.mobedu .dao.model.User)
 	 */
-	public String stopService(Users regUser) throws MobileEduException {
+	@Transactional
+	public String stopService(User regUser) throws MobileEduException {
 		// Clear the message object to populate it with the results string
 		message.delete(0, message.length());
 		try {
@@ -200,54 +253,27 @@ public class UserHandlerService implements Constants {
 			} else {
 				// If code comes here then the user is exists and is active
 				regUser.deActivateUser();
-				dm.updateUser(regUser);
+				updateUser(regUser);
 				message.append("Thank you for using SIO-Guide service.<br />"
 						+ "You have been successfully unregistered.<br />"
 						+ "To register again SMS @sioguide &#60;Class&#62 to "
 						+ TXTWEB_MOBILE_NUMBER + "<br />Eg: @sioguide 10th");
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new MobileEduException(e.getErrorCode() + "", e.getMessage());
-		} catch (MobileEduException e) {
-			e.printStackTrace();
-			throw new MobileEduException(e.getErrorCode() + "", e.getMessage());
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw new MobileEduException(e.getMessage(), e);
 		}
 		return message.toString();
 	}
 
-	/**
-	 * Handle all the start service request. Below table illustrates the
-	 * possible options of a start request by the user:
-	 * <table border="1">
-	 * <tr>
-	 * <th>User Exists</th>
-	 * <th>User IS ACTIVE</th>
-	 * <th>Action to be taken</th>
-	 * </tr>
-	 * <tr>
-	 * <td align="center">No</td>
-	 * <td align="center">---</td>
-	 * <td>Success: Register</td>
-	 * </tr>
-	 * </tr>
-	 * <tr>
-	 * <td align="center">Yes</td>
-	 * <td align="center">No</td>
-	 * <td>Success: Register</td>
-	 * </tr>
-	 * <tr>
-	 * <td align="center">Yes</td>
-	 * <td align="center">Yes</td>
-	 * <td>Error: Already Registered</td>
-	 * </tr>
-	 * </table>
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param user
-	 * @return
-	 * @throws MobileEduException
+	 * @see org.freesource.mobedu.dao.UserManagerService#startService(org
+	 * .freesource.mobedu .dao.model.User)
 	 */
-	public String startService(Users user) throws MobileEduException {
+	@Transactional
+	public String startService(User user) throws MobileEduException {
 		// Save the current standard as it gets overwritten by search, if found
 		String currentStd = user.getRegStandard();
 		// Clear the message object to populate it with the results string
@@ -267,7 +293,7 @@ public class UserHandlerService implements Constants {
 					user.setRegStandard(currentStd);
 					user.activateUser();
 					log.debug("User activated and now updating the user in DB");
-					dm.updateUser(user);
+					updateUser(user);
 					// create the appropriate registration message to be sent
 					// back
 					message.append(Utilities.getStdReplyMessage());
@@ -280,23 +306,11 @@ public class UserHandlerService implements Constants {
 					saveUserToDB(user);
 				}
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new MobileEduException(e.getErrorCode() + "", e.getMessage());
-		} catch (MobileEduException e) {
-			e.printStackTrace();
-			throw new MobileEduException(e.getErrorCode() + "", e.getMessage());
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw new MobileEduException(e.getMessage(), e);
 		}
+
 		return message.toString();
 	}
-
-	public void closeConnections() throws MobileEduException {
-		try {
-			dm.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new MobileEduException(e.getErrorCode() + "", e.getMessage());
-		}
-	}
-
 }

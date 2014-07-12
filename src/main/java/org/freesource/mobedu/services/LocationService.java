@@ -8,7 +8,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.logging.Level;
 
-import org.freesource.mobedu.dao.Location;
+import org.freesource.mobedu.dao.model.Location;
 import org.freesource.mobedu.utils.Constants;
 import org.freesource.mobedu.utils.Logger;
 import org.freesource.mobedu.utils.XMLContainer;

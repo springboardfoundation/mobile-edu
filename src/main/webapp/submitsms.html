@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Page to submit SMS</title>
-<script language="javascript" type="text/javascript" src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+<script language="javascript" type="text/javascript" src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
 <script language="javascript" type="text/javascript" src="js/sendsms.js"></script>
 <script language="javascript" type="text/javascript" src="js/utils.js"></script>
 </head>
@@ -21,6 +21,7 @@
 			</textarea>
 			<br /> You have <input readonly type="text" id="countdown" name="countdown" size="3"
 				value="160" /> characters left. <br /> <br />
+				<input readonly type="hidden" id="userid" name="userid" value="" />
 		</form>
 		</div>
 		<input id="postInfo" value="Submit Message" type="button" />
