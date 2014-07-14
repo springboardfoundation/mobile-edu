@@ -198,7 +198,7 @@ public class ResponseMessageHandler implements Constants {
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 			DocumentBuilder db = dbf.newDocumentBuilder();
 			// Testing URL: LOCAL_PUSH_MSG_URL and actual: PUSH_MSG_URL
-			URLConnection conn = new URL(LOCAL_PUSH_MSG_URL).openConnection();
+			URLConnection conn = new URL(PUSH_MSG_URL).openConnection();
 			conn.setDoOutput(true);
 			OutputStreamWriter wr = new OutputStreamWriter(
 					conn.getOutputStream());

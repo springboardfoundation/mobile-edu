@@ -3,7 +3,7 @@ var Constants = {
 	"UserRestURL" : "/mobEdurest/user/",
 	"MessageRestURL" : "/mobEdurest/message/"
 };
-/* For every message added, add the below code to load the function */
+/* For every method added, add the below code to load the function */
 $(document).ready(init);
 $(document).ready(handleSubmitMessage);
 
