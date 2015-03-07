@@ -44,6 +44,7 @@ public interface Constants {
 	String HTTP_PARAM_PUBLISHER_KEY = "txtweb-pubkey";
 	String HTTP_PARAM_MESSAGE = "message";
 	String HTTP_PARAM_USER = "userid";
+	String EMULATOR = "2100";
 
 	String SUCCESS_CODE = "0";
 

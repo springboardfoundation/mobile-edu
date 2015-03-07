@@ -34,6 +34,7 @@ public class MessageRequestHandlerServlet extends HttpServlet implements
 		Constants {
 
 	private Logger log = Logger.getInstance("MessageRequestHandlerServlet");
+
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
 		try {
@@ -103,8 +104,17 @@ public class MessageRequestHandlerServlet extends HttpServlet implements
 				throw new MobileEduException(
 						"Message Handler Service did not get loaded!");
 			}
-			String result = messageService.sendMessageToUser(req, res, m,
-					currUser);
+			String result = "No result to be shown for the user:" + userId;
+			if (currUser.getProtocol().equals(EMULATOR)) {
+				result = "User:" + userId
+						+ " is emulator, hence not sending SMS to this user.";
+			} else if (!currUser.isActive()) {
+				result = "User:" + userId
+						+ " is not active, hence not sending SMS to this user.";
+			} else {
+				result = messageService
+						.sendMessageToUser(req, res, m, currUser);
+			}
 			log.debug("Message Sending result:" + result);
 			return result;
 		} catch (MobileEduException e) {
@@ -113,7 +123,8 @@ public class MessageRequestHandlerServlet extends HttpServlet implements
 			log.debug(errMsg);
 			return errMsg;
 		} catch (Exception e) {
-			String errMsg = "Exception thrown in the messaging server:" + e.getMessage();
+			String errMsg = "Exception thrown in the messaging server:"
+					+ e.getMessage();
 			log.debug(errMsg);
 			return errMsg;
 		}
