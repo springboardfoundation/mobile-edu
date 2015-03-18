@@ -30,8 +30,8 @@ public interface Constants {
 	String TXT_WEBID_NAME = "txtweb-id";
 	String TXT_PUBLISHERID_NAME = "txtweb-pubkey";
 	// String APPKEY_CONTENT = "42c5f773-6bd7-47f7-81cc-3a9dd4367683";
-	String TXT_SERVICE_APP_KEY = "54990a4f-0fd6-464b-afd1-569ff15edb13";
-	String TXT_PUBLISHER_ID = "cdb77a61-2ca0-456e-a498-f9deea9d9632";
+	String TXT_SERVICE_APP_KEY = "89e2b13a-073f-4814-8ffc-b7e40d632550";
+	String TXT_PUBLISHER_ID = "0a20a054-7183-4a9d-b856-0c84342eb531";
 
 	String LOCATION_API_URL = "http://api.txtweb.com/v1/location/get";
 	String PUSH_MSG_URL = "http://api.txtweb.com/v1/push";
