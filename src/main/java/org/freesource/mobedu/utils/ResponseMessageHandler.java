@@ -74,24 +74,30 @@ public class ResponseMessageHandler implements Constants {
 		out.println("<head>");
 		out.println("<meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />");
 		// Write the appkey to the response
-		out.print("<meta name=");
+		out.print("<meta name=\'");
 		out.print(TXT_APPKEY_NAME);
-		out.print(" content=");
+		out.print("\' content=\'");
 		out.print(TXT_SERVICE_APP_KEY);
-		out.println(" />");
+		out.println("\' />");
+		// Write the publisher key to the response
+		out.print("<meta name=\'");
+		out.print(TXT_PUBLISHERID_NAME);
+		out.print("\' content=\'");
+		out.print(TXT_PUBLISHER_ID);
+		out.println("\' />");
 
 		// Write the appid to the response
 		String s = request.getParameter(TXT_WEBID_NAME);
 		if (null != s && !s.isEmpty()) {
 			log.debug(TXT_WEBID_NAME + ":" + s);
-			out.print("<meta name=");
+			out.print("<meta name=\'");
 			out.print(TXT_WEBID_NAME);
-			out.print(" content=");
+			out.print("\' content=\'");
 			out.print(s);
-			out.println(" />");
+			out.println("\' />");
 		}
 
-		out.println("<meta name=\"description\" content=\"Simple response html page with message in the body\"/>");
+		out.println("<meta name=\'description\' content=\'Simple response html page with message in the body\'/>");
 		out.println("<title>Mobile Education</title>");
 		out.println("</head>");
 		out.println("<body>");
@@ -179,8 +185,8 @@ public class ResponseMessageHandler implements Constants {
 			throws MobileEduException {
 
 		String head = "<html>" + "<head>"
-				+ "<meta name=\"txtweb-appkey\" content=\""
-				+ TXT_SERVICE_APP_KEY + "\">" + "</head>" + "<body>";
+				+ "<meta name=\'"+ TXT_APPKEY_NAME +"\' content=\'"
+				+ TXT_SERVICE_APP_KEY + "\'>" + "</head>" + "<body>";
 
 		String tail = "</body></html>";
 
