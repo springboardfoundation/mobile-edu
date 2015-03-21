@@ -44,4 +44,5 @@ public interface MessageManagerService {
 	 */
 	public String saveMessageToDB(User user);
 
+	public String insertMessage(Message msg);
 }
