@@ -8,6 +8,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.freesource.mobedu.dao.MessageDAO;
 import org.freesource.mobedu.dao.MessageManagerService;
 import org.freesource.mobedu.dao.UserManagerService;
 import org.freesource.mobedu.dao.model.Message;
@@ -19,6 +20,8 @@ import org.freesource.mobedu.utils.MobileEduException;
 import org.freesource.mobedu.utils.ResponseMessageHandler;
 import org.freesource.mobedu.utils.Utilities;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 
@@ -28,6 +31,8 @@ import org.springframework.stereotype.Service;
 public class MessageHandlerService implements Constants, MessageManagerService {
 
 	private Logger log = Logger.getInstance("MessageHandlerService");
+	@Autowired
+	private MessageDAO msgDAO;
 	/**
 	 * @throws MobileEduException
 	 */
@@ -124,4 +129,9 @@ public class MessageHandlerService implements Constants, MessageManagerService {
 		return message.toString();
 	}
 
+	@Transactional
+	public String insertMessage(Message msg){
+		msgDAO.insertMessage(msg);
+		return "Success";
+	}
 }
