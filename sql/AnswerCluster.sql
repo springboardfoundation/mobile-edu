@@ -4,8 +4,8 @@ CREATE TABLE ANS_CLUSTER
 (
   ANS_ID INT, /* Internal primary key field for Answer*/
   ANS_CONTENT VARCHAR(250) NOT NULL, /* The actual answer content */
-  Q_ID  VARCHAR(5), /* Question ID mapping to the question */
-  E_ID VARCHAR(10), /* Expert ID mapping to the expert who has answered */
+  Q_ID  INT, /* Question ID mapping to the question */
+  E_ID INT, /* Expert ID mapping to the expert who has answered */
   ANS_DATE TIMESTAMP NOT NULL, /* Date when the answer was recorded */
   IS_SENT BOOLEAN DEFAULT TRUE /* Delivery status: TRUE-Sent to user, FALSE-Not sent */
 )
