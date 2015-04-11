@@ -46,6 +46,11 @@ public interface Constants {
 	String HTTP_PARAM_USER = "userid";
 	String EMULATOR = "2100";
 
+	String HTTP_PARAM_EXPERTID = "Username";
+	String HTTP_PARAM_EXPERT_PASSWRD = "userpassword";
+
+	String QUESTION = "QUEST";	
+
 	String SUCCESS_CODE = "0";
 
 	String DB_TYPE = "db_type";

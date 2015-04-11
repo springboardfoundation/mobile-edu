@@ -105,8 +105,8 @@ public class ResponseMessageHandler implements Constants {
 		out.println("</body>");
 		out.println("</html>");
 		// A big NOTE: Closing the response to web, nothing more can be written
-		out.close();
 		out.flush();
+		out.close();
 	}
 
 	public String pushMessage(Message messageObj, User userObj)

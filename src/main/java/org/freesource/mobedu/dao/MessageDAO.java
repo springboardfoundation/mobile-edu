@@ -11,5 +11,7 @@ public interface MessageDAO {
 	void delete(Message message);
 
 	//Message getMessageByMobileHash(String mobileHash);
+	int  getMaxMsgId();
+	//returns max id of message table;
 
 }

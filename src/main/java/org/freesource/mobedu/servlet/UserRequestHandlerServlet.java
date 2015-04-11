@@ -98,20 +98,29 @@ public class UserRequestHandlerServlet extends HttpServlet implements Constants 
 			// Populate protocol
 			regUser.setProtocol(request
 					.getParameter(HTTP_PARAM_TXTWEB_PROTOCOL));
-			if (regUser.getRegStandard().isEmpty()
+			if ((regUser.getRegStandard() != null && regUser.getRegStandard()
+					.isEmpty())
+					&& !regUser.getRegStandard().equals(QUESTION)
 					&& !txtweb_message.equalsIgnoreCase(UNREGISTER)) {
 				// The user has requested to register to an invalid std and
 				// hence it was not populated by populateUser()
 				replyForValidStd(txtWebResponse);
 				return;
 			}
+			log.debug("The User Object:" + regUser);
 
 			// Handle the all service stop request here
 			if (null != txtweb_message
 					&& txtweb_message.equalsIgnoreCase(UNREGISTER)) {
 				txtWebResponse.append(userService.stopService(regUser));
-			} else { // Handle start/register request here
+			} else if (regUser.getRegStandard() != null
+					&& !regUser.getRegStandard().isEmpty()
+					&& !regUser.getRegStandard().equals(QUESTION)) {
+				// Handle start/register request here
+				log.debug("Going to start the service");
 				txtWebResponse.append(userService.startService(regUser));
+			} else {
+				txtWebResponse.append(userService.getMessage());
 			}
 
 			ResponseMessageHandler.getInstance(request, response).writeMessage(
