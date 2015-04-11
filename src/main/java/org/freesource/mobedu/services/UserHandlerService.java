@@ -7,8 +7,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.List;
 
+import org.freesource.mobedu.dao.MessageDAO;
 import org.freesource.mobedu.dao.UserDAO;
 import org.freesource.mobedu.dao.UserManagerService;
+import org.freesource.mobedu.dao.model.Message;
 import org.freesource.mobedu.dao.model.User;
 import org.freesource.mobedu.utils.Constants;
 import org.freesource.mobedu.utils.Logger;
@@ -28,6 +30,9 @@ public class UserHandlerService implements Constants, UserManagerService {
 	@Autowired
 	private UserDAO userDAO;
 	private StringBuffer message;
+	
+	@Autowired
+	private MessageDAO msgDAO;
 
 	private Logger log = Logger.getInstance("UserHandlerService");
 	/**
@@ -117,6 +122,7 @@ public class UserHandlerService implements Constants, UserManagerService {
 	public boolean validatePopulateUser(User user, String mobileHash,
 			String arguments) {
 		String[] args;
+		String str;
 		log.debug("Mobile Hash passed:" + mobileHash);
 		user.setMobileId(mobileHash);
 
@@ -136,8 +142,61 @@ public class UserHandlerService implements Constants, UserManagerService {
 				return false;
 			}
 			args = arguments.split(" ");
+			
+			if(args[0].equalsIgnoreCase("Q"))//check is it question?
+			{
+				log.debug("inside question block");
+				if(args.length>=2)
+				{
+					log.debug("inside valid question format  block");
+					arguments=arguments.trim();
+					str=arguments.substring(2);
+					User u = getUserByMobileHash(mobileHash);
+					if(u==null)
+					{
+						u=new User();
+						u.setMobileId(mobileHash);
+						u.setRegStandard(QUESTION);
+						u.deActivateUser();
+						u.setRegDate(new java.sql.Date(Utilities.getCurrentTimestamp()
+								.getTime()));
+						insertUser(u);
+					}else{
+						u.setRegStandard(QUESTION);
+					}
+					user.copyUser(u);
+
+					Message msg =new Message();
+					msg.setUserId(u.getContextId());
+					msg.setMessage(str);
+					msg.activateMessage();
+					msg.setInsertDate(new java.sql.Date(Utilities.getCurrentTimestamp().getTime()));
+					msg.setAsQuestion();
+					msg.setMessageId(msgDAO.getMaxMsgId()+1);
+					log.debug(" before insertion of question in DB:" + msg.getMessageId());
+					msgDAO.insertMessage(msg);
+					log.debug("after insertion of question in DB");
+					message.delete(0,message.length());// flush out or delete the old content
+				
+					message.append("thank you for asking,"
+							+"<br/> will get back to you soon");//reply on qstn
+					return true;
+				}
+				else
+				{
+					log.debug("inside invalid question format block");
+					message.append("Invalid message format for Query ."
+							+ "<br />To query SMS  @sioguide Q &#60;Question&#62; to "
+							+ TXTWEB_MOBILE_NUMBER + "<br />Eg: @sioguide Q carrer related question");
+					return false;
+				}
+				
+			}
+			else
+			{
 
 			if (args.length > 2) {
+				log.debug("inside invalid message block");
 				message.append("Invalid number of arguments passed."
 						+ "<br />To register SMS @sioguide &#60;Class&#62; to "
 						+ TXTWEB_MOBILE_NUMBER + "<br />Eg: @sioguide 10th");
@@ -158,6 +217,7 @@ public class UserHandlerService implements Constants, UserManagerService {
 							+ TXTWEB_MOBILE_NUMBER + "<br />Eg: @sioguide 10th");
 				}
 				return false;
+			}
 			}
 		}
 		user.setRegStandard(Utilities.getStdClass(arguments));
