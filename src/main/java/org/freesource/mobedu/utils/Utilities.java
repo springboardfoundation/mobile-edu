@@ -55,8 +55,7 @@ public class Utilities implements Constants {
 		String value = "";
 		if (null == cl || cl.isEmpty()) {
 			String defaultStd = getStdProperty(DEFAULT_CLASS);
-			classMsg = "No class given for registration, taking " + defaultStd
-					+ " std as default.<br />";
+			classMsg = "No class given for registration, taking " + defaultStd + " std as default.<br />";
 			return defaultStd;
 		}
 		String normalized = cl.trim().toLowerCase();
@@ -78,7 +77,7 @@ public class Utilities implements Constants {
 	public static final Date getCurrentTimestamp() {
 		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-DD HH:mm:ss");
-		//.format(c.getTime());
+		// .format(c.getTime());
 		Date d;
 		try {
 			d = formatter.parse(formatter.format(c.getTime()));
@@ -93,8 +92,7 @@ public class Utilities implements Constants {
 	private static void loadDBProperties() {
 		stdProp = new Properties();
 		try {
-			stdProp.load(Utilities.class.getClassLoader().getResourceAsStream(
-					STD_PROP_FILE));
+			stdProp.load(Utilities.class.getClassLoader().getResourceAsStream(STD_PROP_FILE));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -115,24 +113,20 @@ public class Utilities implements Constants {
 		return getStdProperty(DEFAULT_CLASS);
 	}
 
-	public static void printXML(Document doc, OutputStream out)
-			throws IOException {
+	public static void printXML(Document doc, OutputStream out) throws IOException {
 		try {
 			TransformerFactory tf = TransformerFactory.newInstance();
 			Transformer transformer;
 
 			transformer = tf.newTransformer();
 
-			transformer
-					.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
+			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
 			transformer.setOutputProperty(OutputKeys.METHOD, "xml");
 			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 			transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-			transformer.setOutputProperty(
-					"{http://xml.apache.org/xslt}indent-amount", "4");
+			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
 
-			transformer.transform(new DOMSource(doc), new StreamResult(
-					new OutputStreamWriter(out, "UTF-8")));
+			transformer.transform(new DOMSource(doc), new StreamResult(new OutputStreamWriter(out, "UTF-8")));
 		} catch (TransformerConfigurationException e) {
 			log.debug("Unable to print the XML");
 			e.printStackTrace();

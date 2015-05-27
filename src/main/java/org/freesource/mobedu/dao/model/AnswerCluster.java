@@ -9,30 +9,29 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Length;
+
 @Entity
 @Table(name = "ANS_CLUSTER")
-
 public class AnswerCluster {
 	@Id
 	// @GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ANS_ID", nullable = false)
 	private int answerId;
-	
-	@Length(max = 160, message = "Maximum size allowed for Answer  is 160")
+
+	@Length(max = 500, message = "Maximum size allowed for Answer  is 500")
 	@NotNull(message = "Answer cannot be null")
 	@Column(name = "ANS_CONTENT", nullable = false)
 	private String answer;
-	
+
 	@Column(name = "Q_ID")
 	private int questionID;
-	
+
 	@Column(name = "E_ID")
 	private int expertID;
-	
+
 	@Column(name = "ANS_DATE")
 	private Date answerDate;
-	
-	
+
 	@Column(name = "IS_SENT")
 	private boolean isSent;
 
@@ -74,7 +73,7 @@ public class AnswerCluster {
 	/**
 	 * @return the standard
 	 */
-	public String getQuestionID() {
+	public int getQuestionID() {
 		return questionID;
 	}
 
@@ -82,14 +81,14 @@ public class AnswerCluster {
 	 * @param questionID
 	 *            the questionID to set
 	 */
-	public void setQuestionID(String questionID) {
+	public void setQuestionID(int questionID) {
 		this.questionID = questionID;
 	}
 
 	/**
 	 * @return the subject
 	 */
-	public String getExpertID() {
+	public int getExpertID() {
 		return expertID;
 	}
 
@@ -97,7 +96,7 @@ public class AnswerCluster {
 	 * @param expertID
 	 *            the expertID to set
 	 */
-	public void setExpertID(String expertID) {
+	public void setExpertID(int expertID) {
 		this.expertID = expertID;
 	}
 
@@ -115,7 +114,6 @@ public class AnswerCluster {
 	public void setAnswerDate(Date answerDate) {
 		this.answerDate = answerDate;
 	}
-
 
 	/**
 	 * @return the active

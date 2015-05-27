@@ -136,4 +136,14 @@ public class ExpertResource{
 	public void setExpertPass(String expertPass) {
 		this.expertPass = expertPass;
 	}
+	
+	public String toString(){
+		StringBuffer sb = new StringBuffer();
+		sb.append("ExpertResource:[");
+		sb.append("EXP_ID:" + getExpertId()).append(",");
+		sb.append("EXP_NAME:" + getExpertName()).append(",");
+		sb.append("EXP_LOGIN:" + getExpertLogin());
+		sb.append("]");
+		return sb.toString();
+	}
 }

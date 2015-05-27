@@ -40,7 +40,7 @@ public class Logger implements Constants {
 			}
 			// Default log level is set to error
 			if (null == loglevel || loglevel.isEmpty()) {
-				loglevel = LOG_ERROR;
+				loglevel = LOG_TRACE;
 			}
 		}
 

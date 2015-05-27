@@ -14,8 +14,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.freesource.mobedu.dao.MessageManagerService;
+import org.freesource.mobedu.dao.model.Message;
 import org.freesource.mobedu.db.DBConnectionManager;
 import org.freesource.mobedu.utils.MobileEduException;
+import org.freesource.mobedu.utils.Utilities;
 
 public class TestRequestHandler extends HttpServlet {
 
@@ -107,4 +110,24 @@ public class TestRequestHandler extends HttpServlet {
 		// do nothing.
 	}
 
+
+	public void saveMessage() {
+		Message msg = new Message();
+		msg.setMessageId(1);
+		msg.setMessage("Sample test message");
+		msg.setInsertDate(new java.sql.Date(Utilities.getCurrentTimestamp()
+				.getTime()));
+		msg.activateMessage();
+		// ClassPathXmlApplicationContext ctx = new
+		// ClassPathXmlApplicationContext("SpringBeans.xml");
+		MessageManagerService messageService = null;
+		try {
+			messageService = (MessageManagerService) DBConnectionManager
+					.getInstance().getUserBean("messageHandlerService");
+			messageService.insertMessage(msg);
+		} catch (MobileEduException e) {
+			e.printStackTrace();
+		}
+
+	}
 }

@@ -9,7 +9,6 @@ import org.freesource.mobedu.dao.UserDAO;
 import org.freesource.mobedu.dao.model.User;
 import org.freesource.mobedu.utils.Constants;
 import org.hibernate.Criteria;
-import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;

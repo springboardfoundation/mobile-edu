@@ -3,6 +3,8 @@
  */
 package org.freesource.mobedu.dao;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -43,6 +45,9 @@ public interface MessageManagerService {
 	 * @param user
 	 */
 	public String saveMessageToDB(User user);
-
+	
 	public String insertMessage(Message msg);
+	
+	public List<String> getAllQuestions();
+
 }

@@ -30,11 +30,12 @@ public class UserHandlerService implements Constants, UserManagerService {
 	@Autowired
 	private UserDAO userDAO;
 	private StringBuffer message;
-	
+
 	@Autowired
 	private MessageDAO msgDAO;
 
 	private Logger log = Logger.getInstance("UserHandlerService");
+
 	/**
 	 * @throws MobileEduException
 	 * 
@@ -142,82 +143,83 @@ public class UserHandlerService implements Constants, UserManagerService {
 				return false;
 			}
 			args = arguments.split(" ");
-			
-			if(args[0].equalsIgnoreCase("Q"))//check is it question?
+
+			if (args[0].equalsIgnoreCase("Q"))// check is it question?
 			{
 				log.debug("inside question block");
-				if(args.length>=2)
-				{
+				if (args.length >= 2) {
 					log.debug("inside valid question format  block");
-					arguments=arguments.trim();
-					str=arguments.substring(2);
+					arguments = arguments.trim();
+					str = arguments.substring(2);
 					User u = getUserByMobileHash(mobileHash);
-					if(u==null)
-					{
-						u=new User();
+					if (u == null) {
+						u = new User();
 						u.setMobileId(mobileHash);
 						u.setRegStandard(QUESTION);
 						u.deActivateUser();
-						u.setRegDate(new java.sql.Date(Utilities.getCurrentTimestamp()
-								.getTime()));
+						u.setRegDate(new java.sql.Date(Utilities
+								.getCurrentTimestamp().getTime()));
 						insertUser(u);
-					}else{
+					} else {
 						u.setRegStandard(QUESTION);
 					}
 					user.copyUser(u);
 
-					Message msg =new Message();
+					Message msg = new Message();
 					msg.setUserId(u.getContextId());
 					msg.setMessage(str);
 					msg.activateMessage();
-					msg.setInsertDate(new java.sql.Date(Utilities.getCurrentTimestamp().getTime()));
+					msg.setInsertDate(new java.sql.Date(Utilities
+							.getCurrentTimestamp().getTime()));
 					msg.setAsQuestion();
-					msg.setMessageId(msgDAO.getMaxMsgId()+1);
-					log.debug(" before insertion of question in DB:" + msg.getMessageId());
+					msg.setMessageId(msgDAO.getMaxMsgId() + 1);
+					log.debug(" before insertion of question in DB:"
+							+ msg.getMessageId());
 					msgDAO.insertMessage(msg);
 					log.debug("after insertion of question in DB");
-					message.delete(0,message.length());// flush out or delete the old content
-				
+					message.delete(0, message.length());// flush out or delete
+														// the old content
+
 					message.append("thank you for asking,"
-							+"<br/> will get back to you soon");//reply on qstn
+							+ "<br/> will get back to you soon");// reply on
+																	// qstn
 					return true;
-				}
-				else
-				{
+				} else {
 					log.debug("inside invalid question format block");
 					message.append("Invalid message format for Query ."
 							+ "<br />To query SMS  @sioguide Q &#60;Question&#62; to "
-							+ TXTWEB_MOBILE_NUMBER + "<br />Eg: @sioguide Q carrer related question");
+							+ TXTWEB_MOBILE_NUMBER
+							+ "<br />Eg: @sioguide Q carrer related question");
 					return false;
 				}
-				
-			}
-			else
-			{
 
-			if (args.length > 2) {
-				log.debug("inside invalid message block");
-				message.append("Invalid number of arguments passed."
-						+ "<br />To register SMS @sioguide &#60;Class&#62; to "
-						+ TXTWEB_MOBILE_NUMBER + "<br />Eg: @sioguide 10th");
-				return false;
-			}
-			if (args.length == 2) {
-				String standard = args[0];
-				user.setRegStandard(Utilities.getStdClass(standard));
-				user.setRegSubject("all");
-				if (user.getRegStandard().isEmpty()
-						&& !arguments.equalsIgnoreCase(UNREGISTER)) {
+			} else {
+
+				if (args.length > 2) {
+					log.debug("inside invalid message block");
 					message.append("Invalid number of arguments passed."
 							+ "<br />To register SMS @sioguide &#60;Class&#62; to "
 							+ TXTWEB_MOBILE_NUMBER + "<br />Eg: @sioguide 10th");
-				} else {
-					message.append("Subject specific registration is coming soon."
-							+ "<br />To register SMS @sioguide &#60;Class&#62; to "
-							+ TXTWEB_MOBILE_NUMBER + "<br />Eg: @sioguide 10th");
+					return false;
 				}
-				return false;
-			}
+				if (args.length == 2) {
+					String standard = args[0];
+					user.setRegStandard(Utilities.getStdClass(standard));
+					user.setRegSubject("all");
+					if (user.getRegStandard().isEmpty()
+							&& !arguments.equalsIgnoreCase(UNREGISTER)) {
+						message.append("Invalid number of arguments passed."
+								+ "<br />To register SMS @sioguide &#60;Class&#62; to "
+								+ TXTWEB_MOBILE_NUMBER
+								+ "<br />Eg: @sioguide 10th");
+					} else {
+						message.append("Subject specific registration is coming soon."
+								+ "<br />To register SMS @sioguide &#60;Class&#62; to "
+								+ TXTWEB_MOBILE_NUMBER
+								+ "<br />Eg: @sioguide 10th");
+					}
+					return false;
+				}
 			}
 		}
 		user.setRegStandard(Utilities.getStdClass(arguments));

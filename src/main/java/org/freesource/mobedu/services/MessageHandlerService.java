@@ -3,6 +3,7 @@
  */
 package org.freesource.mobedu.services;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -134,4 +135,17 @@ public class MessageHandlerService implements Constants, MessageManagerService {
 		msgDAO.insertMessage(msg);
 		return "Success";
 	}
+
+	// write method to get all questions and return in List<String>
+	public List<String> getAllQuestions() {
+		List<Message> questions = null;
+		List<String> allQuestions = new ArrayList<String>();
+		questions=msgDAO.getAllQuestions();
+		for (Message message : questions) {
+			allQuestions.add(message.getMessage());
+		}
+		return allQuestions;
+	}
+	
+
 }

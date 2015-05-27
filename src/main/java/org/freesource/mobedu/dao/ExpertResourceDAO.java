@@ -7,9 +7,14 @@ import org.freesource.mobedu.dao.model.ExpertResource;
 public interface ExpertResourceDAO {
 void insertExpert(ExpertResource expert);
 	
-ExpertResource getExpertById(int expertId);
-	
+ExpertResource getExpertById(int expId);
+
+ExpertResource getExpertByloginId(String loginId);
+
+
 	void updateExpert(ExpertResource expert);
+	
+	
 	
 	void delete(ExpertResource expert);
 	
