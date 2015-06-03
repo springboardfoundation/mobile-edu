@@ -3,19 +3,18 @@
  */
 package org.freesource.mobedu.dao.model.object;
 
-import java.util.Date;
-
 /**
  * @author Md Mustakim
  * 
  */
 public class ExpertAnswer {
+
+	private int questionId;
 	private int answerId;
 	private String answer;
 	private int expertId;
-	private int questionId;
 	private String expertName;
-	private Date answerDate;
+	private String answerDate;
 
 	public int getAnswerId() {
 		return answerId;
@@ -49,11 +48,11 @@ public class ExpertAnswer {
 		this.expertName = expertName;
 	}
 
-	public Date getAnswerDate() {
+	public String getAnswerDate() {
 		return answerDate;
 	}
 
-	public void setAnswerDate(Date answerDate) {
+	public void setAnswerDate(String answerDate) {
 		this.answerDate = answerDate;
 	}
 
@@ -63,6 +62,19 @@ public class ExpertAnswer {
 
 	public void setQuestionId(int questionId) {
 		this.questionId = questionId;
+	}
+
+	public String toString() {
+		StringBuffer sb = new StringBuffer();
+		sb.append("[");
+		sb.append("QuestionId:").append(getQuestionId());
+		sb.append(", AnswerId:").append(getAnswerId());
+		sb.append(", ExpertId:").append(getExpertId());
+		sb.append(", ExpertName:").append(getExpertName());
+		sb.append(", Answer:").append(getAnswer());
+		sb.append(", AnswerDate:").append(getAnswerDate());
+		sb.append("]");
+		return sb.toString();
 	}
 
 }

@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.freesource.mobedu.dao.AnswerClusterDAO;
 import org.freesource.mobedu.dao.AnswerClusterManagerService;
 import org.freesource.mobedu.dao.ExpertResourceDAO;
+import org.freesource.mobedu.dao.ExpertResourceManagerService;
 import org.freesource.mobedu.dao.MessageDAO;
 import org.freesource.mobedu.dao.model.AnswerCluster;
 import org.freesource.mobedu.dao.model.Message;
@@ -19,7 +20,9 @@ import org.freesource.mobedu.utils.Logger;
 import org.freesource.mobedu.utils.MobileEduException;
 import org.freesource.mobedu.utils.ResponseMessageHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class AnswerClusterHandlerService implements AnswerClusterManagerService, Constants {
 	@Autowired
 	private AnswerClusterDAO answerClusterDAO;
@@ -29,13 +32,6 @@ public class AnswerClusterHandlerService implements AnswerClusterManagerService,
 	@Autowired
 	private MessageDAO msgDAO;
 	private Logger log = Logger.getInstance("AnswerClusterHandlerService");
-
-	public AnswerClusterHandlerService() throws MobileEduException {
-	}
-
-	/**
-	 * @throws MobileEduException
-	 */
 
 	public List<AnswerCluster> getAnswersById(int answerId) {
 		// TODO Auto-generated method stub

@@ -3,8 +3,14 @@
  *   Developed On: 25 April 2015
  *  
  */
+// Variable to store the answer being typed
+var message;
 
-var postApiUrl = '/api/WallPost/', commentApiUrl = '/answer/postAnswer/';
+function loadform(){
+	console.log("inside loadform()");
+	loadAllQuestions();
+};
+
 
 var initData = [ {
 	"questionId" : 1,
@@ -22,6 +28,9 @@ var initData = [ {
 // Model
 function Question(data) {
 	var self = this;
+	// Global expert to push after save is success
+	var expertAns = new ExpertAnswer();
+
 	console.log("inside question")
 	data = data || {};
 	console.log("questionid:"+data.questionId)
@@ -36,18 +45,30 @@ function Question(data) {
 	self.error = ko.observable();
 	self.answersList = ko.observableArray();
 
-	self.newAnswer = ko.observable();
+	self.expertAnswer = ko.observable();
+	
+	self.setValue = function(expertAnswer){
+		alert("Answer:" + expertAnswer);
+	};
 	self.addAnswer = function() {
-		console.log("Entered Method addComment");
-		var expert = new ExpertAnswer();
-		expert.AnsweId = self.AnsweId;
-		expert.answer(self.newAnswer());
-		expert.expertName = 'Guest';
-		expert.expertId = '-1';
-		expert.answerDate = getTimeAgo(new Date().toISOString());
-		self.answersList.push(expert);
-		self.newAnswer('');
-		$.post(Constants.ExpertRestURL + "saveAnswer", this, handleAnsReply);
+		var some = self.expertAnswer;
+		console.log("Entered Method added comment:" + message);
+		
+
+		expertAns.questionId = self.questionId;
+		// New answer and hence id is -1
+		expertAns.answerId = -1;
+		// expert.answer(self.expertAnswer());
+		expertAns.answer = message;
+		expertAns.expertName = name;
+		expertAns.expertId = id;
+		expertAns.answerDate = new Date().toISOString();
+		// getTimeAgo(new Date().toISOString());
+		console.log("The expert answer:" + expertAns);
+
+		var url = Constants.AnswerURL + "replyToQuestion";
+		console.log("URL =" + url);
+		makeJsonAjaxPostCall(url, expertAns, self.handleAnsReply);
 	}
 	if (data.answersList) {
 		var mappedPosts = $.map(data.answersList, function(item) {
@@ -58,10 +79,13 @@ function Question(data) {
 	self.toggleComment = function(item, event) {
 		$(event.target).next().find('.publishComment').toggle();
 	}
-}
 
-function handleAnsReply() {
-
+	self.handleAnsReply = function() {
+		alert("Your answer has been saved successfully:" + status);
+		expertAns.answerDate = getTimeAgo(expertAns.answerDate);
+		self.answersList.push(expertAns);
+		self.expertAnswer('');
+	}
 };
 
 function ExpertAnswer(data) {
@@ -69,17 +93,33 @@ function ExpertAnswer(data) {
 	data = data || {};
 
 	// Persisted properties
+	self.questionId=data.questionId;
 	self.answerId = data.answerId;
 	self.answer = ko.observable(data.answer || "");
 	self.expertId = data.expertId || "";
 	self.expertName = data.expertName || "";
-	self.answerDate = getTimeAgo(data.answerDate);
+	self.answerDate = data.answerDate;
 	self.error = ko.observable();
 	// persist edits to real values on accept
 	self.deleteComment = function() {
 	}
 
-}
+};
+
+
+function ExperObj(data) {
+	var self = this;
+	data = data || {};
+
+	// Persisted properties
+	self.questionId=data.questionId;
+	self.answerId = data.answerId;
+	self.answer = data.answer || "";
+	self.expertId = data.expertId || "";
+	self.expertName = data.expertName || "";
+	self.answerDate = new Date().toISOString();
+};
+
 
 function getTimeAgo(varDate) {
 	if (varDate) {
@@ -88,16 +128,31 @@ function getTimeAgo(varDate) {
 	} else {
 		return '';
 	}
-}
+};
+
+
+
+
+
+
+
+
+var expName, expId, expLogin;
+
 
 function loadAllQuestions() {
-	var quesUrl = Constants.QuestionURL + "allQuestions";
+	 var quesUrl = Constants.QuestionURL + "allQuestions";
 	console.log("inside loadAllQuestions():" + quesUrl);
 	$.get(quesUrl, display);
 };
 function display(dbData){
+	var element = $('#quesHolder'); 
+	ko.cleanNode(element);
 	ko.applyBindings(new showQuestions(dbData));
-}
+};
+
+//custom bindings
+
 
 function showQuestions(dbData) {
 	var self = this;
@@ -113,9 +168,59 @@ function showQuestions(dbData) {
 		self.questionsList(mappedPosts);
 	}
 	self.loadPosts();
-	
-}
 
+	self.getUnasnwered = function(){
+		var quesUrl = Constants.QuestionURL + "unAnsweredQues";
+		console.log("unAnswered filter clicked" + quesUrl);
+		for(;self.questionsList.pop(););
+		$.get(quesUrl, function(newList){
+			var mappedPosts = $.map(newList, function(item) {
+				return new Question(item);
+			});
+			self.questionsList(mappedPosts);
+		});
+		}
+	self.getAnsnwered = function(){
+		var quesUrl = Constants.QuestionURL + "AnsweredQues";
+		console.log("unAnswered filter clicked" + quesUrl);
+		for(;self.questionsList.pop(););
+		$.get(quesUrl, function(newList){
+			var mappedPosts = $.map(newList, function(item) {
+				return new Question(item);
+			});
+			self.questionsList(mappedPosts);
+		});
+	}
+};
+
+
+// textarea autosize
+ko.bindingHandlers.jqAutoresize = {
+	init : function(element, valueAccessor, aBA, vm) {
+		if (!$(element).hasClass('msgTextArea')) {
+			$(element).css('height', '1em');
+		}
+		$(element).autosize();
+	}
+};
+
+
+
+ko.bindingHandlers.maxLength = {
+        update: function(element, valueAccessor, allBindings){
+        	// console.log("inside limiting function");
+        	if(allBindings().value()){
+        		element.value = element.value.substr(0, valueAccessor());
+                allBindings().value(allBindings().value().substr(0, valueAccessor()));
+                message=allBindings().value().substr(0, valueAccessor());
+            }
+        }
+    }
+
+
+
+
+/*
 function viewModel() {
 	var self = this;
 	self.questionsList = ko.observableArray();
@@ -131,17 +236,5 @@ function viewModel() {
 	self.loadPosts();
 	return self;
 };
-
-// custom bindings
-
-// textarea autosize
-ko.bindingHandlers.jqAutoresize = {
-	init : function(element, valueAccessor, aBA, vm) {
-		if (!$(element).hasClass('msgTextArea')) {
-			$(element).css('height', '1em');
-		}
-		$(element).autosize();
-	}
-};
-
 ko.applyBindings(new viewModel());
+*/

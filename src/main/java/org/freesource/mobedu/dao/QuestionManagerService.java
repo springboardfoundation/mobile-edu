@@ -14,26 +14,26 @@ public interface QuestionManagerService {
 	/**
 	 * get these many number of messages(queries)from DB to the UI
 	 */
-	public Question getAllQuestions(int begin, int end);
+	public List<Question> getAllQuestions(int begin, int end);
 
 	/**
 	 * get All unanswered messages(queries)from DB to the UI
 	 */
-	public Question getUnAnsweredQuestions();
+	public List<Question> getUnAnsweredQuestions() throws MobileEduException;
 
 	/**
 	 * get these many number of unanswered messages(queries)from DB to the UI
 	 */
-	public Question getUnAnsweredQuestions(int begin, int end);
+	public List<Question> getUnAnsweredQuestions(int begin, int end);
 
 	/**
 	 * get All answered messages(queries)from DB to the UI
 	 */
-	public Question getAnsweredQuestions();
+	public List<Question> getAnsweredQuestions() throws MobileEduException;
 
 	/**
 	 * get these many number of answered messages(queries)from DB to the UI
 	 */
-	public Question getAnsweredQuestions(int begin, int end);
+	public List<Question> getAnsweredQuestions(int begin, int end);
 
 }

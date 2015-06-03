@@ -68,7 +68,7 @@ public class QuestionHandlerService implements Constants,
 				ans.setAnswer(ls.getAnswer());
 				ans.setExpertId(ls.getExpertID());
 				ans.setExpertName(exp.getname(ls.getExpertID()));
-				ans.setAnswerDate(ls.getAnswerDate());
+				ans.setAnswerDate(ls.getAnswerDate().toGMTString());
 				expAns.add(ans);
 			}
 		}
@@ -76,31 +76,56 @@ public class QuestionHandlerService implements Constants,
 	}
 
 	@Override
-	public Question getAllQuestions(int begin, int end) {
+	public List<Question> getAllQuestions(int begin, int end) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Question getUnAnsweredQuestions() {
+	public List<Question> getUnAnsweredQuestions() throws MobileEduException  {
+		List<Message> msgLst = (List<Message>) msgDAO.getUnAnsweredQ();
+		List<Question> qList = new ArrayList<Question>();
+		for (Message m : msgLst) {
+			Question q = new Question();
+			q.setQuestionId(m.getMessageId());
+			q.setQuestion(m.getMessage());
+			q.setQuestionDate(m.getInsertDate());
+
+		//	q.setAnswersList(getAllAnswers(q.getQuestionId()));
+			qList.add(q);
+		}
+
+		return qList;
+	}
+
+
+	@Override
+	public List<Question> getUnAnsweredQuestions(int begin, int end) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Question getUnAnsweredQuestions(int begin, int end) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Question> getAnsweredQuestions() throws MobileEduException {
+		List<Message> msgLst = (List<Message>) msgDAO.getAllQuestions();
+		log.debug("LIST OF QUESTION form getAnswerd Q" + msgLst);
+		List<Question> qList = new ArrayList<Question>();
+		for (Message m : msgLst) {
+			Question q = new Question();
+			q.setQuestionId(m.getMessageId());
+			q.setQuestion(m.getMessage());
+			q.setQuestionDate(m.getInsertDate());
+
+			q.setAnswersList(getAllAnswers(q.getQuestionId()));
+			qList.add(q);
+		}
+
+		return qList;
+
 	}
 
 	@Override
-	public Question getAnsweredQuestions() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Question getAnsweredQuestions(int begin, int end) {
+	public List<Question> getAnsweredQuestions(int begin, int end) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -44,6 +44,28 @@ public class QuestionHandlerServlet extends HttpServlet implements Constants {
 	String saveAnswer(Question q) {
 		return "";
 	}
+	
+	@RequestMapping(value = "unAnsweredQues", produces = "application/json", method = RequestMethod.GET)
+	public @ResponseBody
+	List<Question> loadunAnsweredQues() throws IOException, MobileEduException {
+		log.debug("inside servelet to loadunansweredQuestn");
+		QuestionService = (QuestionManagerService) DBConnectionManager.getInstance().getUserBean("questionHandlerService");
+		List<Question> q = (List<Question>) QuestionService.getUnAnsweredQuestions();
+				
+		return q;
+	}
+	
+	
+	@RequestMapping(value = "AnsweredQues", produces = "application/json", method = RequestMethod.GET)
+	public @ResponseBody
+	List<Question> loadAnsweredQues() throws IOException, MobileEduException {
+		log.debug("inside servelet to loadunansweredQuestn");
+		QuestionService = (QuestionManagerService) DBConnectionManager.getInstance().getUserBean("questionHandlerService");
+		List<Question> q = (List<Question>) QuestionService.getAnsweredQuestions();
+				
+		return q;
+	}
+	
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		try {

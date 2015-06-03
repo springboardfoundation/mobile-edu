@@ -1,109 +1,89 @@
 <!DOCTYPE html>
-<html lang="en">
-<title>Expert Question-Answer system</title>
-<!-- <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" />-->
-<link type="text/css" rel="stylesheet" href="css/loginStyle.css" />
-<link type="text/css" rel="stylesheet" href="css/site.css" />
 
-<body onload="loadForm()">
-<script src="js/jquery-2.1.0.js"></script>
-<script src="js/jquery.autosize-min.js"></script>
-<script src="js/jquery.timeago.js"></script>
-<script src="js/knockout-2.2.0.js"></script>
-<script type="text/javascript" src="js/leanModal-modified-for-onload.js"></script>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<title>Expert Page</title>
+<!-- All in One SEO Pack 1.6.13.2 by Michael Torbert of Semper Fi Web Design[247,357] -->
+<meta name="description"
+	content="Facebook Style Wall Posting and Commenting System using knockout.js, jquery and asp.net mvc4 with web api">
+<meta name="keywords"
+	content="facebook like commenting, facebook wall post">
+<!-- /all in one seo pack -->
+<link rel="stylesheet" type="text/css" href="./css/site.css">
+</head>
+<body onload="loadform()">
+	<div id="mybody">
 
-<script language="javascript" type="text/javascript" src="js/globalVariables.js"></script>
-<script language="javascript" type="text/javascript" src="js/checkLogin.js"></script>
-<script src="js/wallpostclient.js"></script>
-
-<div class="container">
-	<a id="modal_trigger" href="#modal" class="btn">
-	       <div id="body">
-            <section class="content-wrapper main-content clear-fix" style="padding:0 auto">
-<h2>Expert Page</h2>   
-<ul id="quesHolder" data-bind="foreach: questionsList">             
-    <li class="postHolder">
-        <p><a data-bind="text: questionId">1</a>: <span data-bind=" html: question">What I should do after 10th?</span></p>
-        <div class="postFooter">
-            <span class="timeago" data-bind="text: questionDate">2 years ago</span>&nbsp;<a class="linkComment" href="#" data-bind="    click: toggleComment">Comment</a>
-            <div class="commentSection">
-                <ul data-bind="foreach: answersList">
-                    <li class="commentHolder">
-                        <p><a data-bind="text: expertId">1</a><a data-bind="text: expertName">Kapil</a>: <span data-bind="html: answer">like neat and clean UI ... </span></p>
-                        <div class="commentFooter"> <span class="timeago" data-bind="text: answerDate">2 years ago</span>&nbsp;</div>
-                    </li>
-                </ul>
-                <div style="display: block" class="publishComment">
-                    <textarea class="commentTextArea" data-bind="value: newAnswer, jqAutoresize: {}" placeholder="write a comment..." style="height: 18px; overflow: hidden; word-wrap: break-word; resize: none;"></textarea>
-                    <input type="button" value="Comment" class="btnComment" data-bind="click: addAnswer">
-                </div>
-            </div>
-        </div>
-    </li>
-
-</ul>
-
-            </section>
-			
-        </div>
-   </div>
-        <footer>
-            <div class="content-wrapper">
-                <div class="float-left">
-                    <p>© 2014 - techforchange.com </p>
-                </div>
-            </div>
-        </footer>
-
-    
-	<textarea tabindex="-1" style="position: absolute; top: -999px; left: 0px; right: auto; bottom: auto; border: 0px; box-sizing: content-box; word-wrap: break-word; overflow: hidden; height: 0px !important; min-height: 0px !important; font-family: &#39;Segoe UI&#39;, Verdana, Helvetica, sans-serif; font-size: 13.8720006942749px; font-weight: 400; font-style: normal; letter-spacing: 0px; text-transform: none; word-spacing: 0px; text-indent: 0px; line-height: normal; width: 778px;" class="autosizejs"></textarea>
-
-	</a>
-
-	<div id="modal" class="popupContainer" style="display:none;">
-		<header class="popupHeader">
-			<span class="header_title">Login</span>
-			<span class="modal_close"><i class="fa fa-times"></i></span>
-		</header>
-		
-		<section class="popupBody">
-			<!-- Username & Password Login form -->
-			<div class="user_login">
-				<form id="login">
-					<label>Username:</label>
-					<input id="username" name="username" type="text" />
-					<br />
-
-					<label>Password:</label>
-					<input id="userpassword" name="userpassword" type="password" />
-					<br />
-
-					<div class="action_btns">
-						<div class="one_half"><a href="#" class="btn back_btn"><i class="fa fa-angle-double-left"></i> Back</a></div>
-						<div class="one_half last"><a id="loginBtn"href="#" class="btn btn_red">Login</a></div>
-					</div>
-				</form>
-				<div id="message"></div>
-				<a href="#" class="forgot_password" onclick="contactAdmin()">Forgot password?</a>
+		<section class="content-wrapper main-content clear-fix"
+			style="padding: 0 auto">
+			<h2>Expert Page</h2>
+			<div><table><tr><td><div class="one_half last"><a id="unanswered"href="#" data-bind="click:getUnasnwered" class="btn btn_red">UnAnswered</a></div></td>
+<td><div class="one_half last"><a id="answerd"href="#" data-bind="click:getAnsnwered" class="btn btn_red">Answered</a></div></td></tr>
+</table>
 			</div>
+			<ul id="quesHolder" data-bind="foreach: questionsList">
+			
+				<li class="postHolder">
+					<p>
+						<a data-bind="text: questionId">1</a>: <span
+							data-bind=" html: question">What I should do after 10th?</span>
+					</p>
+					<div class="postFooter">
+						<span class="timeago" data-bind="text: questionDate">2
+							years ago</span>&nbsp;<a class="linkComment" href="#"
+							data-bind="    click: toggleComment">Comment</a>
+						<div class="commentSection">
+							<ul data-bind="foreach: answersList">
+								<li class="commentHolder">
+									<p>
+										<a data-bind="text: expertId">1</a><a
+											data-bind="text: expertName">Kapil</a>: <span
+											data-bind="html: answer">like neat and clean UI ... </span>
+									</p>
+									<div class="commentFooter">
+										<span class="timeago" data-bind="text: answerDate">2
+											years ago</span>&nbsp;
+									</div>
+								</li>
+							</ul>
+							<div style="display: block" class="publishComment">
+								<textarea class="commentTextArea"
+									data-bind="value: expertAnswer, jqAutoresize: {},maxLength: 160,valueUpdate: 'afterkeydown'"
+									placeholder="write a message to reply(160 characters only)..."
+									style="height: 18px; overflow: hidden; word-wrap: break-word; resize: none;"></textarea>
+								<input type="button" value="Comment" class="btnComment"
+									data-bind="click: addAnswer">
+							</div>
+						</div>
+					</div>
+				</li>
+			</ul>
+
 		</section>
+
 	</div>
-</div>
+	<footer>
+		<div class="content-wrapper">
+			<div class="float-left">
+				<p>© 2014 - techforchange.com</p>
+			</div>
+		</div>
+	</footer>
 
-<script type="text/javascript">
-	$("#modal_trigger").leanModal({top : 200, overlay : 0.6, closeButton: ".modal_close" });
+	<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+	<script src="http://timeago.yarp.com/jquery.timeago.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.3.0/knockout-min.js"></script>
 
-	function loadForm(){
-		$(".user_login").show();
-	};
-	function closeForm(){
-		$("#lean_overlay").fadeOut(200);
-		$("#modal").css({
-			"display": "none"
-		});
-		$(".user_login").hide();
-	};
-</script>
+	<script src="js/jquery.autosize-min.js"></script>
+	<script src="js/globalVariables.js"></script>
+	<script src="js/utils.js"></script>
+	<script src="js/wallpostclient.js"></script>
 
+	<!-- <textarea tabindex="-1"
+		style="position: absolute; top: -999px; left: 0px; right: auto; bottom: auto; border: 0px; box-sizing: content-box; word-wrap: break-word; overflow: hidden; height: 0px !important; min-height: 0px !important; font-family: &amp; #39; Segoe UI&amp;#39; , Verdana , Helvetica, sans-serif; font-size: 13.8720006942749px; font-weight: 400; font-style: normal; letter-spacing: 0px; text-transform: none; word-spacing: 0px; text-indent: 0px; line-height: normal; width: 778px;"
+		class="autosizejs"></textarea> -->
 
-</body></html>
+</body>
+</html>
