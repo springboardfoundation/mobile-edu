@@ -71,6 +71,18 @@
 		<servlet-name>testServlet</servlet-name>
 		<url-pattern>/test</url-pattern>
 	</servlet-mapping>
+	
+	<!-- Expert Session Handler servlet -->
+	<servlet>
+		<servlet-name>expServlet</servlet-name>
+		<servlet-class>org.freesource.mobedu.servlet.ExpertSessionHandler</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>expServlet</servlet-name>
+		<url-pattern>/expertSession</url-pattern>
+	</servlet-mapping>
 
 	<error-page>
 		<!-- Missing login? -->

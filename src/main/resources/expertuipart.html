@@ -1,19 +1,27 @@
-<!DOCTYPE html>
-
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <title>Expert Page</title>
-<!-- All in One SEO Pack 1.6.13.2 by Michael Torbert of Semper Fi Web Design[247,357] -->
 <meta name="description"
 	content="Facebook Style Wall Posting and Commenting System using knockout.js, jquery and asp.net mvc4 with web api">
 <meta name="keywords"
 	content="facebook like commenting, facebook wall post">
 <!-- /all in one seo pack -->
 <link rel="stylesheet" type="text/css" href="./css/site.css">
+
+<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="http://timeago.yarp.com/jquery.timeago.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.3.0/knockout-min.js"></script>
+
+<script src="js/jquery.autosize-min.js"></script>
+<script src="js/globalVariables.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/wallpostclient.js"></script>
+
 </head>
-<body onload="loadform()">
+<body onload="loadAllQuestions()">
 	<div id="mybody">
 
 		<section class="content-wrapper main-content clear-fix"
@@ -64,6 +72,7 @@
 		</section>
 
 	</div>
+
 	<footer>
 		<div class="content-wrapper">
 			<div class="float-left">
@@ -71,19 +80,3 @@
 			</div>
 		</div>
 	</footer>
-
-	<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
-	<script src="http://timeago.yarp.com/jquery.timeago.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.3.0/knockout-min.js"></script>
-
-	<script src="js/jquery.autosize-min.js"></script>
-	<script src="js/globalVariables.js"></script>
-	<script src="js/utils.js"></script>
-	<script src="js/wallpostclient.js"></script>
-
-	<!-- <textarea tabindex="-1"
-		style="position: absolute; top: -999px; left: 0px; right: auto; bottom: auto; border: 0px; box-sizing: content-box; word-wrap: break-word; overflow: hidden; height: 0px !important; min-height: 0px !important; font-family: &amp; #39; Segoe UI&amp;#39; , Verdana , Helvetica, sans-serif; font-size: 13.8720006942749px; font-weight: 400; font-style: normal; letter-spacing: 0px; text-transform: none; word-spacing: 0px; text-indent: 0px; line-height: normal; width: 778px;"
-		class="autosizejs"></textarea> -->
-
-</body>
-</html>

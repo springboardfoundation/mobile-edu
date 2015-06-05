@@ -1,6 +1,8 @@
 package org.freesource.mobedu.servlet;
 
 import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.freesource.mobedu.dao.AnswerClusterManagerService;
 import org.freesource.mobedu.dao.model.object.ExpertAnswer;
@@ -70,7 +72,8 @@ public class AnswerClusterHandlerServlet extends HttpServlet implements Constant
 	}*/
 
 	@RequestMapping(value = "replyToQuestion", method = RequestMethod.POST)
-	public @ResponseBody String sendAnswerToUser(@RequestBody ExpertAnswer exp) {
+	public @ResponseBody String sendAnswerToUser(@RequestBody ExpertAnswer exp, HttpServletRequest req,
+			HttpServletResponse res) {
 		log.debug("Inside: sendAnswerToUser()");
 		log.debug("The expert answer object passed is:" + exp);
 		// Get the request parameters

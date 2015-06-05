@@ -25,16 +25,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class ExpertRequestHandlerServlet extends HttpServlet implements
 		Constants {
 	private Logger log = Logger.getInstance("ExpertRequestHandlerServlet");
-	String expertid;
-	String password;
 
 	@RequestMapping(value = "checkExpert.this", method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
 	Expert loginCheck(HttpServletRequest req, HttpServletResponse res)
 			throws IOException {
 		log.debug("Inside: loginCheck()");
-		expertid = req.getParameter(HTTP_PARAM_EXPERTID);
-		password = req.getParameter(HTTP_PARAM_EXPERT_PASSWRD);
+		String expertid = req.getParameter(HTTP_PARAM_USERNAME);
+		String password = req.getParameter(HTTP_PARAM_PASSWRD);
 		// should we delete line for security purpose?
 		log.debug("userExpert:" + expertid + ", pass word:" + password);
 		Expert result = null;

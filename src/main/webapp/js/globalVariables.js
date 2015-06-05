@@ -2,9 +2,9 @@
  * 
  */
 
-var id = 0;
-var name = 'Guest';
-var loginId = 'guest';
+var exp_id = 0;
+var exp_name = 'Guest';
+var exp_loginId = 'guest';
 var LoginErrMsg = "Provided login credentials are invalid";
 
 // Define constants in this variable
@@ -15,3 +15,15 @@ var Constants = {
 	"QuestionURL" : "/mobEdurest/question/",
 	"AnswerURL" : "/mobEdurest/answer/"
 };
+
+function setExpName(name) {
+	exp_name = name;
+}
+
+function setExpLoginId(loginId) {
+	exp_loginId = loginId;
+}
+
+function setExpId(id) {
+	exp_id = id;
+}

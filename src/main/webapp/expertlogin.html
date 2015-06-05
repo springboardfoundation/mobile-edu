@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>Expert Login Page</title>
+
+<link href="css/login-box.css" rel="stylesheet" type="text/css" />
+<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script language="javascript" type="text/javascript" src="js/globalVariables.js"></script>
+</head>
+
+<body>
+	<div style="padding: 100px 0 0 250px;">
+		<div id="login-box">
+
+			<H2>Login</H2>
+			<div id="message" />
+			Expert Login Form: Please enter valid credentials provided by the
+			system admin
+		</div>
+		<br /> <br />
+		<form id="loginform" method="post">
+		<div id="login-box-name" style="margin-top: 20px;">Login ID:</div>
+		<div id="login-box-field" style="margin-top: 20px;">
+			<input name="username" id="username" class="form-login"
+				title="Username" value="" size="30" maxlength="2048" />
+		</div>
+		<div id="login-box-name">Password:</div>
+		<div id="login-box-field">
+			<input name="userpassword" id="userpassword" type="password"
+				class="form-login" title="Password" value="" size="30"
+				maxlength="2048" />
+		</div>
+		</form>
+		<br /> <span class="login-box-options"><a
+			href="javascript:forgotPassword()" style="margin-left: 30px;">Forgot
+				password?</a></span> <br /> <br /> <a href="javascript:performLogin()"><img
+			src="images/login-btn.png" width="103" height="42"
+			style="margin-left: 90px;" /></a>
+	</div>
+	</div>
+	<div id="inset_form"></div>
+
+	<script type="text/javascript">
+		function resetMessage() {
+			$("#message").empty();
+			$("#message").css("font-weight", "Normal");
+			$("#message").append("Expert Login Form: Please enter valid credentials provided by the system admin");
+		}
+		function forgotPassword() {
+			$("#message").empty();
+			$("#message").css("font-weight", "Bold");
+			$("#message").append("Please email the system administrator at engineersforsociety@gmailcom for password reset");
+			setTimeout(resetMessage, 5000);
+		}
+		function performLogin() {
+			console.log("Login button was clicked");
+			var expName = $.trim($('#username').val());
+			var expPass = $.trim($('#userpassword').val());
+
+			if (('undefined' == expName || expName.length == 0)
+					|| ('undefined' == expPass || expPass.length == 0)) {
+				alert("Please enter User Name / Password to login");
+			} else {
+				var url = Constants.ExpertRestURL + "checkExpert.this";
+				console.log("URL:" + url);
+				$.post(url, $('#loginform').serialize(), handleLogin);
+			}
+		}
+		function handleLogin(expertObject){
+			if(null == expertObject || 0 == expertObject.id){
+				alert("Invalid username/passowrd combination provided. Please enter valid credentails");
+				$("#message").empty();
+				$("#message").css("font-weight", "Bold");
+				$("#message").append("Invalid username/passowrd combination provided.<BR/> Please enter valid credentails");
+				setTimeout(resetMessage, 5000);
+			}else{
+				var expId=expertObject.id;
+				var expLoginName=expertObject.loginId;
+				var expName=expertObject.name;
+				var formString = '<form action="/expertSession" name="vote" method="post" style="display:none;">';
+				formString += '<input type="text" name="expertId" value="' + expId +'">';
+				formString += '<input type="text" name="expertLoginId" value="' + expLoginName +'">';
+				formString += '<input type="text" name="expertName" value="' + expName +'">';
+				formString += '</form>';
+
+				$('#inset_form').html(formString);
+				document.forms['vote'].submit();
+			}
+			$('#username').val("");
+			$('#userpassword').val("");
+		}
+	</script>
+</body>
+</html>

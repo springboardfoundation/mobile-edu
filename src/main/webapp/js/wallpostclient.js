@@ -53,15 +53,18 @@ function Question(data) {
 	self.addAnswer = function() {
 		var some = self.expertAnswer;
 		console.log("Entered Method added comment:" + message);
-		
+		if(setSession){
+			console.log("Calling setSession");
+			setSession();
+		}
 
 		expertAns.questionId = self.questionId;
 		// New answer and hence id is -1
 		expertAns.answerId = -1;
 		// expert.answer(self.expertAnswer());
 		expertAns.answer = message;
-		expertAns.expertName = name;
-		expertAns.expertId = id;
+		expertAns.expertName = exp_name;
+		expertAns.expertId = exp_id;
 		expertAns.answerDate = new Date().toISOString();
 		// getTimeAgo(new Date().toISOString());
 		console.log("The expert answer:" + expertAns);
@@ -80,7 +83,7 @@ function Question(data) {
 		$(event.target).next().find('.publishComment').toggle();
 	}
 
-	self.handleAnsReply = function() {
+	self.handleAnsReply = function(status) {
 		alert("Your answer has been saved successfully:" + status);
 		expertAns.answerDate = getTimeAgo(expertAns.answerDate);
 		self.answersList.push(expertAns);
@@ -129,12 +132,6 @@ function getTimeAgo(varDate) {
 		return '';
 	}
 };
-
-
-
-
-
-
 
 
 var expName, expId, expLogin;
