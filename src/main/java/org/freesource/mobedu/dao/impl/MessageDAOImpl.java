@@ -106,4 +106,17 @@ public class MessageDAOImpl implements MessageDAO, Constants {
 		}
 		return (List<Message>) list;
 	}
+
+	@Override
+	public Message getMessageById(int msgId) {
+		Criteria query = sessionFactory.getCurrentSession()
+				.createCriteria(Message.class)
+				.add(Restrictions.eq("messageId",msgId));//  creates a query condition
+		List list = query.list();// this statement executes query returns value
+		if (list.size() == 0) {
+			return null;
+		}
+		return (Message) list.get(0);		// TODO Auto-generated method stub
+	}
+
 }

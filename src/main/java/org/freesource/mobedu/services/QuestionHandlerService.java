@@ -84,6 +84,7 @@ public class QuestionHandlerService implements Constants,
 	@Override
 	public List<Question> getUnAnsweredQuestions() throws MobileEduException  {
 		List<Message> msgLst = (List<Message>) msgDAO.getUnAnsweredQ();
+		log.debug("LIST OF QUESTION form get UnAnswerd Q" + msgLst);
 		List<Question> qList = new ArrayList<Question>();
 		for (Message m : msgLst) {
 			Question q = new Question();
@@ -107,7 +108,7 @@ public class QuestionHandlerService implements Constants,
 
 	@Override
 	public List<Question> getAnsweredQuestions() throws MobileEduException {
-		List<Message> msgLst = (List<Message>) msgDAO.getAllQuestions();
+		List<Message> msgLst = (List<Message>) msgDAO.getAnsweredQ();
 		log.debug("LIST OF QUESTION form getAnswerd Q" + msgLst);
 		List<Question> qList = new ArrayList<Question>();
 		for (Message m : msgLst) {

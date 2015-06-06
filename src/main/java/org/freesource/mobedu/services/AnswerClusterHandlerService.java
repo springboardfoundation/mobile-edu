@@ -1,24 +1,30 @@
 package org.freesource.mobedu.services;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 
 import org.freesource.mobedu.dao.AnswerClusterDAO;
 import org.freesource.mobedu.dao.AnswerClusterManagerService;
 import org.freesource.mobedu.dao.ExpertResourceDAO;
 import org.freesource.mobedu.dao.ExpertResourceManagerService;
 import org.freesource.mobedu.dao.MessageDAO;
+import org.freesource.mobedu.dao.UserDAO;
 import org.freesource.mobedu.dao.model.AnswerCluster;
 import org.freesource.mobedu.dao.model.Message;
 import org.freesource.mobedu.dao.model.User;
+import org.freesource.mobedu.dao.model.object.ExpertAnswer;
 import org.freesource.mobedu.db.DBConnectionManager;
 import org.freesource.mobedu.utils.Constants;
 import org.freesource.mobedu.utils.Logger;
 import org.freesource.mobedu.utils.MobileEduException;
 import org.freesource.mobedu.utils.ResponseMessageHandler;
+import org.freesource.mobedu.utils.Utilities;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +37,9 @@ public class AnswerClusterHandlerService implements AnswerClusterManagerService,
 
 	@Autowired
 	private MessageDAO msgDAO;
+	@Autowired
+
+	private UserDAO usrDao;
 	private Logger log = Logger.getInstance("AnswerClusterHandlerService");
 
 	public List<AnswerCluster> getAnswersById(int answerId) {
@@ -48,21 +57,41 @@ public class AnswerClusterHandlerService implements AnswerClusterManagerService,
 		return null;
 	}
 
-	public String sendAnswerToUser(HttpServletRequest req, HttpServletResponse res, AnswerCluster answerObject,
-			User user) {
+	public String sendAnswerToUser(ExpertAnswer expObj,HttpServletRequest req, HttpServletResponse res) {
 		StringBuilder answer = new StringBuilder();
-		log.debug("Inside sendAnswerToUser");
+		log.debug("Inside answerReply");
+		Message msgObj=new Message();
+		User usrObj=new User();
 		try {
-			log.debug("sendAnswerToUser: Sending for user: " + user.getContextId());
-			Message tempAns = new Message();
-			tempAns.setMessage(answerObject.getAnswer());
-			String response = ResponseMessageHandler.getInstance(req, res).pushMessage(tempAns, user);
-			answer.append("Response=>" + response);
-			log.debug("Final response from sendAnswerToUser:" + answer.toString());
+			log.debug("Inside try");
+
+			msgObj =msgDAO.getMessageById(expObj.getQuestionId());
+			log.debug("Inside answerReply  msgObj"+msgObj);
+			log.debug("Question is to be :"+msgObj.getMessage()+" To this User"+msgObj.getUserId());
+			log.debug("user context id"+msgObj.getUserId());
+			int id=msgObj.getUserId();
+			usrObj=usrDao.getUserById(id);
+			log.debug("Inside answerReply user"+usrObj);
+			String response = ResponseMessageHandler.getInstance(req, res)
+					.pushMessage(msgObj, usrObj);
+			log.debug("the return from pushMessage"+response);
+			if(response.contains("sent")){//deactivating message (updating) and inserting answer to db
+				msgObj.deActivateMessage();
+				msgDAO.update(msgObj);
+				AnswerCluster ansObj=new AnswerCluster();
+				ansObj.setExpertID(expObj.getExpertId());
+				ansObj.setAnswerId(expObj.getAnswerId());
+				ansObj.setAnswer(expObj.getAnswer());
+				ansObj.setQuestionID(expObj.getQuestionId());
+				ansObj.setAnswerDate(new java.sql.Date(Utilities.getCurrentTimestamp().getTime()));
+				log.debug("the answer object to be inserted :" + ansObj);
+				insertAnswer(ansObj);
+				return "Success";
+			}
 		} catch (MobileEduException e) {
-			log.error("MobileEduException occurred when processing the user: " + user.getContextId(), e);
+			log.error("MobileEduException occurred when processing the user: " + usrObj.getContextId(), e);
 			answer.append("MobileEduException occurred: " + e.getMessage() + " when processing the user: "
-					+ user.getContextId());
+					+ usrObj.getContextId());
 		}
 		log.debug("sendAnswerToUser: Message Handler response: " + answer);
 		return answer.toString();
@@ -104,11 +133,11 @@ public class AnswerClusterHandlerService implements AnswerClusterManagerService,
 			}
 		}
 		return expAns;
-
 	}
 
 	public String getExpName(int expertID) {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 }

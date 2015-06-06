@@ -6,11 +6,15 @@ import org.freesource.mobedu.dao.model.Message;
 
 public interface MessageDAO {
 
+	// new message inserted;
 	void insertMessage(Message message);
 
+	// updating current message object;
 	void update(Message message);
 
-	// Message getMessageById(int msgId);
+	// getting message using its id;
+	Message getMessageById(int msgId);
+
 	void delete(Message message);
 
 	// Message getMessageByMobileHash(String mobileHash);

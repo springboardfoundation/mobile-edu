@@ -5,6 +5,8 @@ package org.freesource.mobedu.dao.impl;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.freesource.mobedu.dao.UserDAO;
 import org.freesource.mobedu.dao.model.User;
 import org.freesource.mobedu.utils.Constants;
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Service;
  * 
  */
 @Service
+@Transactional
 public class UserDAOImpl implements UserDAO, Constants {
 
 	@Autowired

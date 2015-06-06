@@ -8,7 +8,6 @@ import java.util.List;
 
 import org.freesource.mobedu.dao.AnswerClusterDAO;
 import org.freesource.mobedu.dao.model.AnswerCluster;
-import org.freesource.mobedu.dao.model.Message;
 import org.freesource.mobedu.utils.Constants;
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;

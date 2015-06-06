@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.freesource.mobedu.dao.model.AnswerCluster;
-import org.freesource.mobedu.dao.model.User;
+import org.freesource.mobedu.dao.model.object.ExpertAnswer;
 
 public interface AnswerClusterManagerService {
 	// Getting the List of answer by ANS_Id
@@ -19,8 +19,7 @@ public interface AnswerClusterManagerService {
 	List<AnswerCluster>getAllAnswers(int questionID);
 
 	// Sending the answer to Particular user Who ask the Question.
-	public String sendAnswerToUser(HttpServletRequest req, HttpServletResponse res, AnswerCluster answerObject,
-			User user);
+	public String sendAnswerToUser(ExpertAnswer expObj,HttpServletRequest req, HttpServletResponse res);
 
 	// Inserting the answer to database(Table- AnswerCluster)
 	public String insertAnswer(AnswerCluster ans);
