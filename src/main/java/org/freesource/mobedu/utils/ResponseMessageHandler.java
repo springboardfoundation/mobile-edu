@@ -29,7 +29,7 @@ import org.xml.sax.SAXException;
 /**
  */
 public class ResponseMessageHandler implements Constants {
-	
+
 	private Logger log = Logger.getInstance("ResponseMessageHandler");
 
 	private ResponseMessageHandler() {
@@ -43,12 +43,12 @@ public class ResponseMessageHandler implements Constants {
 	/**
 	 * A singleton pattern object being created as there is no need for multiple
 	 * instances of this object on the same request/response combination
+	 * 
 	 * @param req
 	 * @param res
 	 * @return
 	 */
-	public static ResponseMessageHandler getInstance(HttpServletRequest req,
-			HttpServletResponse res) {
+	public static ResponseMessageHandler getInstance(HttpServletRequest req, HttpServletResponse res) {
 		ResponseMessageHandler rmh = thisObj;
 		if (null == rmh) {
 			synchronized (ResponseMessageHandler.class) {
@@ -109,8 +109,7 @@ public class ResponseMessageHandler implements Constants {
 		out.close();
 	}
 
-	public String pushMessage(Message messageObj, User userObj)
-			throws MobileEduException {
+	public String pushMessage(Message messageObj, User userObj) throws MobileEduException {
 		String mobileHash = userObj.getMobileId();
 		String message = messageObj.getMessage();
 
@@ -141,8 +140,7 @@ public class ResponseMessageHandler implements Constants {
 				reply.append("Result after trying again " + result);
 			}
 		} else {
-			throw new MobileEduException("Error occured!!! Error code : "
-					+ result);
+			throw new MobileEduException("Error occured!!! Error code : " + result);
 		}
 		log.trace("Push Message response string: " + reply);
 		return reply.toString();
@@ -160,6 +158,8 @@ public class ResponseMessageHandler implements Constants {
 	 * minutes per mobile number No more than 20 messages per 10 seconds per
 	 * mobile number <br />
 	 * -104 Number registered with NCPR <br />
+	 * -106 Long code access disabled for mobile operator You can push messages
+	 * only to Vodafone,Idea,Airtel & Tata docomo users. <br />
 	 * -300 Missing publisher key Get your publisher key under Build and Manage
 	 * my apps section on txtWeb.com and include it in the parameter list of the
 	 * API call <br />
@@ -174,29 +174,31 @@ public class ResponseMessageHandler implements Constants {
 	 * one you have sent in the API request call <br />
 	 * -402 Maximum Throttle exceeded No more than 5,000 API calls in a single
 	 * day <br />
+	 * -404 Message contains profane content <br />
+	 * -405 App blocked from using push api <br />
+	 * -406 User is not subscribed and push quota for event user got over <br />
 	 * -500 Mobile opted out If a mobile number has opted out from receiving any
 	 * message from the app <br />
 	 * -600 Missing message Check if you have included the message to be sent in
-	 * the right format
+	 * the right format <br />
+	 * -700 Not a sandbox user. You are trying to push through an unpublished
+	 * app. You need to register the mobile number in your txtweb.com account
+	 * and then try the PUSH API.
 	 * 
 	 * @throws MobileEduException
 	 */
-	private int sendPushMessage(String message, String mobileHash)
-			throws MobileEduException {
+	private int sendPushMessage(String message, String mobileHash) throws MobileEduException {
 
-		String head = "<html>" + "<head>"
-				+ "<meta name=\'"+ TXT_APPKEY_NAME +"\' content=\'"
-				+ TXT_SERVICE_APP_KEY + "\'>" + "</head>" + "<body>";
+		String head = "<html>" + "<head>" + "<meta name=\'" + TXT_APPKEY_NAME + "\' content=\'" + TXT_SERVICE_APP_KEY
+				+ "\'>" + "</head>" + "<body>";
 
 		String tail = "</body></html>";
 
 		String htmlMessage = head + message + tail;
 
 		try {
-			String urlParams = HTTP_PARAM_TXTWEB_MESSAGE + "="
-					+ URLEncoder.encode(htmlMessage, "UTF-8") + "&"
-					+ HTTP_PARAM_TXTWEB_MOBILE + "=" + mobileHash + "&"
-					+ HTTP_PARAM_PUBLISHER_KEY + "="
+			String urlParams = HTTP_PARAM_TXTWEB_MESSAGE + "=" + URLEncoder.encode(htmlMessage, "UTF-8") + "&"
+					+ HTTP_PARAM_TXTWEB_MOBILE + "=" + mobileHash + "&" + HTTP_PARAM_PUBLISHER_KEY + "="
 					+ URLEncoder.encode(TXT_PUBLISHER_ID, "UTF-8");
 
 			log.trace("The push message being sent:" + urlParams);
@@ -206,8 +208,7 @@ public class ResponseMessageHandler implements Constants {
 			// Testing URL: LOCAL_PUSH_MSG_URL and actual: PUSH_MSG_URL
 			URLConnection conn = new URL(PUSH_MSG_URL).openConnection();
 			conn.setDoOutput(true);
-			OutputStreamWriter wr = new OutputStreamWriter(
-					conn.getOutputStream());
+			OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
 			wr.write(urlParams);
 			wr.flush();
 
@@ -215,7 +216,7 @@ public class ResponseMessageHandler implements Constants {
 			Document doc = db.parse(conn.getInputStream());
 			// Use the below for logging the response XML
 			log.trace("The response for push message:");
-			// Utilities.printXML(doc, System.out);
+			Utilities.printXML(doc, System.out);
 
 			NodeList statusNodes = doc.getElementsByTagName("status");
 			String code = "-1";
@@ -231,27 +232,20 @@ public class ResponseMessageHandler implements Constants {
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
 			throw new MobileEduException(
-					"Sending Push message failed with a runtime exception: ParserConfigurationException",
-					e);
+					"Sending Push message failed with a runtime exception: ParserConfigurationException", e);
 		} catch (SAXException e) {
 			e.printStackTrace();
-			throw new MobileEduException(
-					"Sending Push message failed with a runtime exception: SAXException",
-					e);
+			throw new MobileEduException("Sending Push message failed with a runtime exception: SAXException", e);
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
-			throw new MobileEduException(
-					"Sending Push message failed with a runtime exception: MalformedURLException",
+			throw new MobileEduException("Sending Push message failed with a runtime exception: MalformedURLException",
 					e);
 		} catch (IOException e) {
 			e.printStackTrace();
-			throw new MobileEduException(
-					"Sending Push message failed with a runtime exception: IOException",
-					e);
+			throw new MobileEduException("Sending Push message failed with a runtime exception: IOException", e);
 		} catch (NumberFormatException ne) {
 			ne.printStackTrace();
-			throw new MobileEduException(
-					"Sending Push message failed with a runtime exception: NumberFormatException",
+			throw new MobileEduException("Sending Push message failed with a runtime exception: NumberFormatException",
 					ne);
 		}
 
@@ -259,8 +253,7 @@ public class ResponseMessageHandler implements Constants {
 	}
 
 	private String getTagValue(String sTag, Element eElement) {
-		NodeList nodeList = eElement.getElementsByTagName(sTag).item(0)
-				.getChildNodes();
+		NodeList nodeList = eElement.getElementsByTagName(sTag).item(0).getChildNodes();
 		Node node = nodeList.item(0);
 		return node.getNodeValue();
 	}

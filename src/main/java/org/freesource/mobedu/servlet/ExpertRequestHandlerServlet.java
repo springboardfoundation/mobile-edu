@@ -45,14 +45,17 @@ public class ExpertRequestHandlerServlet extends HttpServlet implements
 				result = new Expert();
 				result.setId(0);
 				result.setLoginId("InvalidUser");
-				result.setName("User name / Password did not match");
+				result.setName("Invalid username/passowrd combination provided.<BR/> Please enter valid credentails");
 				log.debug("login failure");
 			} else
 				System.out.println("login success");
 		} catch (Exception e) {
 			log.error("Error", e);
+			result = new Expert();
+			result.setId(0);
+			result.setLoginId("InvalidUser");
+			result.setName("There was an exception in the server.<BR/> Please check with the system administrator.");
 		}
-
 		return result;
 	}
 

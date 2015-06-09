@@ -1,13 +1,10 @@
 package org.freesource.mobedu.services;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.transaction.Transactional;
 
 import org.freesource.mobedu.dao.AnswerClusterDAO;
 import org.freesource.mobedu.dao.AnswerClusterManagerService;
@@ -38,7 +35,6 @@ public class AnswerClusterHandlerService implements AnswerClusterManagerService,
 	@Autowired
 	private MessageDAO msgDAO;
 	@Autowired
-
 	private UserDAO usrDao;
 	private Logger log = Logger.getInstance("AnswerClusterHandlerService");
 
@@ -57,28 +53,32 @@ public class AnswerClusterHandlerService implements AnswerClusterManagerService,
 		return null;
 	}
 
-	public String sendAnswerToUser(ExpertAnswer expObj,HttpServletRequest req, HttpServletResponse res) {
+	public String sendAnswerToUser(ExpertAnswer expObj, HttpServletRequest req, HttpServletResponse res) {
 		StringBuilder answer = new StringBuilder();
 		log.debug("Inside answerReply");
-		Message msgObj=new Message();
-		User usrObj=new User();
+		Message argMsgObj = new Message();
+		User usrObj = new User();
 		try {
 			log.debug("Inside try");
 
-			msgObj =msgDAO.getMessageById(expObj.getQuestionId());
-			log.debug("Inside answerReply  msgObj"+msgObj);
-			log.debug("Question is to be :"+msgObj.getMessage()+" To this User"+msgObj.getUserId());
-			log.debug("user context id"+msgObj.getUserId());
-			int id=msgObj.getUserId();
-			usrObj=usrDao.getUserById(id);
-			log.debug("Inside answerReply user"+usrObj);
-			String response = ResponseMessageHandler.getInstance(req, res)
-					.pushMessage(msgObj, usrObj);
-			log.debug("the return from pushMessage"+response);
-			if(response.contains("sent")){//deactivating message (updating) and inserting answer to db
+			Message msgObj = msgDAO.getMessageById(expObj.getQuestionId());
+			log.debug("Question is to be :" + msgObj.getMessage());
+			log.debug("user context id:" + msgObj.getUserId());
+			int id = msgObj.getUserId();
+			usrObj = usrDao.getUserById(id);
+			log.debug("Inside answerReply user:" + usrObj);
+
+			// Set the argument message object and sent to the SMS sender
+			argMsgObj.setAsQuestion();
+			argMsgObj.setMessage(expObj.getAnswer());
+			argMsgObj.setUserId(msgObj.getUserId());
+			String response = ResponseMessageHandler.getInstance(req, res).pushMessage(argMsgObj, usrObj);
+			log.debug("The return from pushMessage:" + response);
+			if (response.contains("sent")) {
+				// deactivating message (updating) and inserting answer to db
 				msgObj.deActivateMessage();
 				msgDAO.update(msgObj);
-				AnswerCluster ansObj=new AnswerCluster();
+				AnswerCluster ansObj = new AnswerCluster();
 				ansObj.setExpertID(expObj.getExpertId());
 				ansObj.setAnswerId(expObj.getAnswerId());
 				ansObj.setAnswer(expObj.getAnswer());

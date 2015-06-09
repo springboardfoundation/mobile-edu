@@ -43,8 +43,7 @@ public class UserRequestHandlerServlet extends HttpServlet implements Constants 
 	 */
 	public void init() throws ServletException {
 		try {
-			userService = (UserManagerService) DBConnectionManager
-					.getInstance().getUserBean("userHandlerService");
+			userService = (UserManagerService) DBConnectionManager.getInstance().getUserBean("userHandlerService");
 		} catch (MobileEduException e) {
 			e.printStackTrace();
 			throw new ServletException(e.getMessage(), e);
@@ -53,18 +52,15 @@ public class UserRequestHandlerServlet extends HttpServlet implements Constants 
 	}
 
 	@RequestMapping(value = "userCount", method = RequestMethod.GET)
-	public @ResponseBody
-	long getNumberOfUsers(HttpServletRequest req, HttpServletResponse res)
-			throws IOException, MobileEduException {
+	public @ResponseBody long getNumberOfUsers(HttpServletRequest req, HttpServletResponse res) throws IOException,
+			MobileEduException {
 		log.debug("Inside: getNumberOfUsers()");
-		userService = (UserManagerService) DBConnectionManager.getInstance()
-				.getUserBean("userHandlerService");
+		userService = (UserManagerService) DBConnectionManager.getInstance().getUserBean("userHandlerService");
 		long count = userService.getNumberOfUser();
 		return count;
 	}
 
-	public void doGet(HttpServletRequest req, HttpServletResponse res)
-			throws IOException {
+	public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
 		try {
 			// Buffer to contain the response to be sent back to the user
 			StringBuilder txtWebResponse = new StringBuilder();
@@ -83,25 +79,18 @@ public class UserRequestHandlerServlet extends HttpServlet implements Constants 
 				return;
 			}
 
-			userService = (UserManagerService) DBConnectionManager
-					.getInstance().getUserBean("userHandlerService");
+			userService = (UserManagerService) DBConnectionManager.getInstance().getUserBean("userHandlerService");
 			// Get the message from the request parameter
-			String txtweb_message = request
-					.getParameter(HTTP_PARAM_TXTWEB_MESSAGE);
-
-			if (!userService.validatePopulateUser(regUser, mobileHash,
-					txtweb_message)) {
-				ResponseMessageHandler.getInstance(request, response)
-						.writeMessage(userService.getMessage());
+			String txtweb_message = request.getParameter(HTTP_PARAM_TXTWEB_MESSAGE);
+			// Populate protocol
+			regUser.setProtocol(request.getParameter(HTTP_PARAM_TXTWEB_PROTOCOL));
+			if (!userService.validatePopulateUser(regUser, mobileHash, txtweb_message)) {
+				ResponseMessageHandler.getInstance(request, response).writeMessage(userService.getMessage());
 				return;
 			}
-			// Populate protocol
-			regUser.setProtocol(request
-					.getParameter(HTTP_PARAM_TXTWEB_PROTOCOL));
-			if ((regUser.getRegStandard() != null && regUser.getRegStandard()
-					.isEmpty())
-					&& !regUser.getRegStandard().equals(QUESTION)
-					&& !txtweb_message.equalsIgnoreCase(UNREGISTER)) {
+
+			if ((regUser.getRegStandard() != null && regUser.getRegStandard().isEmpty())
+					&& !regUser.getRegStandard().equals(QUESTION) && !txtweb_message.equalsIgnoreCase(UNREGISTER)) {
 				// The user has requested to register to an invalid std and
 				// hence it was not populated by populateUser()
 				replyForValidStd(txtWebResponse);
@@ -110,11 +99,9 @@ public class UserRequestHandlerServlet extends HttpServlet implements Constants 
 			log.debug("The User Object:" + regUser);
 
 			// Handle the all service stop request here
-			if (null != txtweb_message
-					&& txtweb_message.equalsIgnoreCase(UNREGISTER)) {
+			if (null != txtweb_message && txtweb_message.equalsIgnoreCase(UNREGISTER)) {
 				txtWebResponse.append(userService.stopService(regUser));
-			} else if (regUser.getRegStandard() != null
-					&& !regUser.getRegStandard().isEmpty()
+			} else if (regUser.getRegStandard() != null && !regUser.getRegStandard().isEmpty()
 					&& !regUser.getRegStandard().equals(QUESTION)) {
 				// Handle start/register request here
 				log.debug("Going to start the service");
@@ -123,17 +110,14 @@ public class UserRequestHandlerServlet extends HttpServlet implements Constants 
 				txtWebResponse.append(userService.getMessage());
 			}
 
-			ResponseMessageHandler.getInstance(request, response).writeMessage(
-					txtWebResponse.toString());
+			ResponseMessageHandler.getInstance(request, response).writeMessage(txtWebResponse.toString());
 		} catch (MobileEduException e) {
 			log.debug(e.getMessage());
-			ResponseMessageHandler.getInstance(request, response).writeMessage(
-					DEFAULT_REGISTRATION_ERR_MSG);
+			ResponseMessageHandler.getInstance(request, response).writeMessage(DEFAULT_REGISTRATION_ERR_MSG);
 			return;
 		} catch (IOException e) {
 			log.debug(e.getMessage());
-			ResponseMessageHandler.getInstance(request, response).writeMessage(
-					DEFAULT_REGISTRATION_ERR_MSG);
+			ResponseMessageHandler.getInstance(request, response).writeMessage(DEFAULT_REGISTRATION_ERR_MSG);
 		}
 	}
 
@@ -146,15 +130,12 @@ public class UserRequestHandlerServlet extends HttpServlet implements Constants 
 	 *            - StringBuffer to append the response and send to the user
 	 * @throws IOException
 	 */
-	private void replyForValidStd(StringBuilder txtWebResponse)
-			throws IOException {
+	private void replyForValidStd(StringBuilder txtWebResponse) throws IOException {
 
 		txtWebResponse.append("Invalid option selected. ");
-		txtWebResponse.append("Please select one from the given list:<br />"
-				+ Utilities.getListOfSupportedClass());
+		txtWebResponse.append("Please select one from the given list:<br />" + Utilities.getListOfSupportedClass());
 		txtWebResponse.append("<br /> Eg: @sioguide 10th");
-		ResponseMessageHandler.getInstance(request, response).writeMessage(
-				txtWebResponse.toString());
+		ResponseMessageHandler.getInstance(request, response).writeMessage(txtWebResponse.toString());
 	}
 
 	/**
@@ -167,8 +148,7 @@ public class UserRequestHandlerServlet extends HttpServlet implements Constants 
 	private void respondToRegisterRequest() throws IOException {
 		// This has been moved to a separate method so that it can be changed in
 		// future to forward to a different page, if required
-		ResponseMessageHandler.getInstance(request, response).writeMessage(
-				"Application Registration Message");
+		ResponseMessageHandler.getInstance(request, response).writeMessage("Application Registration Message");
 		return;
 	}
 

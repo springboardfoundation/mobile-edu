@@ -68,11 +68,17 @@
 			}
 		}
 		function handleLogin(expertObject){
-			if(null == expertObject || 0 == expertObject.id){
-				alert("Invalid username/passowrd combination provided. Please enter valid credentails");
+			if(null == expertObject || typeof expertObject == 'undefined'){
+				alert("Server Exception. Please contact system administrator");
 				$("#message").empty();
 				$("#message").css("font-weight", "Bold");
-				$("#message").append("Invalid username/passowrd combination provided.<BR/> Please enter valid credentails");
+				$("#message").append("There was an exception in the server.<BR/> Please check with the system administrator.");
+				setTimeout(resetMessage, 5000);
+			}else if(0 == expertObject.id){
+				// alert("Invalid username/passowrd combination provided. Please enter valid credentails");
+				$("#message").empty();
+				$("#message").css("font-weight", "Bold");
+				$("#message").append(expertObject.name);
 				setTimeout(resetMessage, 5000);
 			}else{
 				var expId=expertObject.id;

@@ -21,8 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class QuestionHandlerService implements Constants,
-		QuestionManagerService {
+public class QuestionHandlerService implements Constants, QuestionManagerService {
 
 	@Autowired
 	private MessageDAO msgDAO;
@@ -40,28 +39,26 @@ public class QuestionHandlerService implements Constants,
 		List<Message> msgLst = (List<Message>) msgDAO.getAllQuestions();
 		log.debug("LIST OF QUESTION" + msgLst);
 		List<Question> qList = new ArrayList<Question>();
-		for (Message m : msgLst) {
-			Question q = new Question();
-			q.setQuestionId(m.getMessageId());
-			q.setQuestion(m.getMessage());
-			q.setQuestionDate(m.getInsertDate());
+		if (null != msgLst) {
+			for (Message m : msgLst) {
+				Question q = new Question();
+				q.setQuestionId(m.getMessageId());
+				q.setQuestion(m.getMessage());
+				q.setQuestionDate(m.getInsertDate());
 
-			q.setAnswersList(getAllAnswers(q.getQuestionId()));
-			qList.add(q);
+				q.setAnswersList(getAllAnswers(q.getQuestionId()));
+				qList.add(q);
+			}
 		}
-
 		return qList;
 	}
 
-	private List<ExpertAnswer> getAllAnswers(int questionId)
-			throws MobileEduException {
-		List<AnswerCluster> ansLst = (List<AnswerCluster>) ansDAO
-				.getAllAnswersByQuestionId(questionId);
+	private List<ExpertAnswer> getAllAnswers(int questionId) throws MobileEduException {
+		List<AnswerCluster> ansLst = (List<AnswerCluster>) ansDAO.getAllAnswersByQuestionId(questionId);
 		List<ExpertAnswer> expAns = new ArrayList<ExpertAnswer>();
-		ExpertResourceManagerService exp = (ExpertResourceManagerService) DBConnectionManager
-				.getInstance().getUserBean("expertResourceHandlerService");
+		ExpertResourceManagerService exp = (ExpertResourceManagerService) DBConnectionManager.getInstance()
+				.getUserBean("expertResourceHandlerService");
 		if (null != ansLst) {
-
 			for (AnswerCluster ls : ansLst) {
 				ExpertAnswer ans = new ExpertAnswer();
 				ans.setExpertId(ls.getAnswerId());
@@ -82,23 +79,22 @@ public class QuestionHandlerService implements Constants,
 	}
 
 	@Override
-	public List<Question> getUnAnsweredQuestions() throws MobileEduException  {
+	public List<Question> getUnAnsweredQuestions() throws MobileEduException {
 		List<Message> msgLst = (List<Message>) msgDAO.getUnAnsweredQ();
 		log.debug("LIST OF QUESTION form get UnAnswerd Q" + msgLst);
 		List<Question> qList = new ArrayList<Question>();
-		for (Message m : msgLst) {
-			Question q = new Question();
-			q.setQuestionId(m.getMessageId());
-			q.setQuestion(m.getMessage());
-			q.setQuestionDate(m.getInsertDate());
-
-		//	q.setAnswersList(getAllAnswers(q.getQuestionId()));
-			qList.add(q);
+		if (null != msgLst) {
+			for (Message m : msgLst) {
+				Question q = new Question();
+				q.setQuestionId(m.getMessageId());
+				q.setQuestion(m.getMessage());
+				q.setQuestionDate(m.getInsertDate());
+				// q.setAnswersList(getAllAnswers(q.getQuestionId()));
+				qList.add(q);
+			}
 		}
-
 		return qList;
 	}
-
 
 	@Override
 	public List<Question> getUnAnsweredQuestions(int begin, int end) {
@@ -109,18 +105,19 @@ public class QuestionHandlerService implements Constants,
 	@Override
 	public List<Question> getAnsweredQuestions() throws MobileEduException {
 		List<Message> msgLst = (List<Message>) msgDAO.getAnsweredQ();
-		log.debug("LIST OF QUESTION form getAnswerd Q" + msgLst);
+		log.debug("LIST OF QUESTION from getAnswerd Q:" + msgLst);
 		List<Question> qList = new ArrayList<Question>();
-		for (Message m : msgLst) {
-			Question q = new Question();
-			q.setQuestionId(m.getMessageId());
-			q.setQuestion(m.getMessage());
-			q.setQuestionDate(m.getInsertDate());
+		if (null != msgLst) {
+			for (Message m : msgLst) {
+				Question q = new Question();
+				q.setQuestionId(m.getMessageId());
+				q.setQuestion(m.getMessage());
+				q.setQuestionDate(m.getInsertDate());
 
-			q.setAnswersList(getAllAnswers(q.getQuestionId()));
-			qList.add(q);
+				q.setAnswersList(getAllAnswers(q.getQuestionId()));
+				qList.add(q);
+			}
 		}
-
 		return qList;
 
 	}

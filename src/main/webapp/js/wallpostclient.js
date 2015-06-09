@@ -188,6 +188,18 @@ function showQuestions(dbData) {
 			self.questionsList(mappedPosts);
 		});
 	}
+	self.getAllQuestions = function(){
+		var quesUrl = Constants.QuestionURL + "allQuestions";
+		console.log("All Questions filter clicked" + quesUrl);
+		for(;self.questionsList.pop(););
+		$.get(quesUrl, function(newList){
+			var mappedPosts = $.map(newList, function(item) {
+				return new Question(item);
+			});
+			self.questionsList(mappedPosts);
+		});
+	}
+
 };
 
 

@@ -27,9 +27,11 @@
 		<section class="content-wrapper main-content clear-fix"
 			style="padding: 0 auto">
 			<h2>Expert Page</h2>
-			<div><table><tr><td><div class="one_half last"><a id="unanswered"href="#" data-bind="click:getUnasnwered" class="btn btn_red">UnAnswered</a></div></td>
-<td><div class="one_half last"><a id="answerd"href="#" data-bind="click:getAnsnwered" class="btn btn_red">Answered</a></div></td></tr>
-</table>
+			<div><table><tr>
+				<td><div class="one_half last"><a id="unanswered" href="#" data-bind="click:getUnasnwered" class="btn btn_red">UnAnswered</a></div></td>
+				<td><div class="one_half last"><a id="answerd" href="#" data-bind="click:getAnsnwered" class="btn btn_red">Answered</a></div></td>
+				<td><div class="one_half last"><a id="all" href="#" data-bind="click:getAllQuestions" class="btn btn_red">All Questions</a></div></td>
+				</tr></table>
 			</div>
 			<ul id="quesHolder" data-bind="foreach: questionsList">
 			
