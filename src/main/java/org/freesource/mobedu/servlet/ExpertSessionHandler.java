@@ -15,8 +15,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.freesource.mobedu.utils.Constants;
+import org.freesource.mobedu.utils.Logger;
 
 public class ExpertSessionHandler extends HttpServlet implements Constants {
+	private Logger log = Logger.getInstance("ExpertSessionHandler");
 
 	/**
 	 * Generated Serial Version UID
@@ -26,25 +28,55 @@ public class ExpertSessionHandler extends HttpServlet implements Constants {
 	public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doPost(request, response);
 	}
+	public void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException, NullPointerException {
+		String paramExpId = "0";
+		String paramExpName = "Guest";
+		String paramExpLoginId = "guest";
+		log.debug("Inside ExpertSessionHandler");
+		try {
+			log.debug("inside try start");
+			paramExpId = request.getParameter(HTTP_PARAM_EXPERTID);
+			paramExpName = request.getParameter(HTTP_PARAM_EXPERT_NAME);
+			paramExpLoginId = request.getParameter(HTTP_PARAM_EXPERT_LOGINID);
+			log.debug("inside try finish");
+		} catch (Exception e) {
+			log.debug("inside null catch");
+			paramExpId = "0";
+			log.debug("paramExpId :" + paramExpId);
+			log.debug("paramExpName :" + paramExpName);
+			log.debug("paramExpLoginId :" + paramExpLoginId);
+			e.printStackTrace();
+		}
 
-	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String paramExpId = request.getParameter(HTTP_PARAM_EXPERTID);
-		String paramExpName = request.getParameter(HTTP_PARAM_EXPERT_NAME);
-		String paramExpLoginId = request.getParameter(HTTP_PARAM_EXPERT_LOGINID);
+		log.debug("after null catch");
+		log.debug("paramExpId :" + paramExpId);
+		if (paramExpId == null) {
+			paramExpId = "0";
+			paramExpName = "Guest";
+			paramExpLoginId = "guest";
+			log.debug("inside if null paramExpId :" + paramExpId);
 
-		int expId = Integer.parseInt(paramExpId.trim());
-		String expName = paramExpName.trim();
-		String expLoginId = paramExpLoginId.trim();
-
-		// Set response content type
-		response.setContentType("text/html");
+		}
 
 		InputStream inputStream = null;
 		BufferedReader br = null;
+
 		// Actual logic goes here.
+
 		try {
+			int expId = Integer.parseInt(paramExpId.trim());
+			log.debug("paramExpName :" + paramExpName);
+			log.debug("expId :" + expId);
+			String expName = paramExpName.trim();
+			String expLoginId = paramExpLoginId.trim();
+
+			// Set response content type
+			response.setContentType("text/html");
+
 			PrintWriter out = response.getWriter();
-			inputStream = ExpertSessionHandler.class.getClassLoader().getResourceAsStream("expertuipart.html");
+			inputStream = ExpertSessionHandler.class.getClassLoader()
+					.getResourceAsStream("expertuipart.html");
 			br = new BufferedReader(new InputStreamReader(inputStream));
 			while (true) {
 				String s = br.readLine();
@@ -66,12 +98,15 @@ public class ExpertSessionHandler extends HttpServlet implements Constants {
 			out.println("</html>");
 			out.flush();
 			out.close();
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			// Failed to read from html file? Send Failure Manually
 			PrintWriter out = response.getWriter();
 			out.println(generateFailureMessage());
-		} finally {
+		}
+
+		finally {
 			if (inputStream != null) {
 				try {
 					inputStream.close();
@@ -87,8 +122,8 @@ public class ExpertSessionHandler extends HttpServlet implements Constants {
 				}
 			}
 		}
-	}
 
+	}
 	private String generateFailureMessage() {
 		StringBuilder message = new StringBuilder();
 		message.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");

@@ -21,12 +21,13 @@
 <script src="js/wallpostclient.js"></script>
 
 </head>
-<body onload="loadAllQuestions()">
+<body onload="validateAndLoad()">
 	<div id="mybody">
 
 		<section class="content-wrapper main-content clear-fix"
 			style="padding: 0 auto">
 			<h2>Expert Page</h2>
+			<div align="right"><a id="unanswered" href="#" onClick="performLogOut();" class="btn btn_red">Logout</a></div>
 			<div><table><tr>
 				<td><div class="one_half last"><a id="unanswered" href="#" data-bind="click:getUnasnwered" class="btn btn_red">UnAnswered</a></div></td>
 				<td><div class="one_half last"><a id="answerd" href="#" data-bind="click:getAnsnwered" class="btn btn_red">Answered</a></div></td>

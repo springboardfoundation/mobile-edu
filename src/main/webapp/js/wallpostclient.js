@@ -6,10 +6,7 @@
 // Variable to store the answer being typed
 var message;
 
-function loadform(){
-	console.log("inside loadform()");
-	loadAllQuestions();
-};
+
 
 
 var initData = [ {
@@ -53,10 +50,6 @@ function Question(data) {
 	self.addAnswer = function() {
 		var some = self.expertAnswer;
 		console.log("Entered Method added comment:" + message);
-		if(setSession){
-			console.log("Calling setSession");
-			setSession();
-		}
 
 		expertAns.questionId = self.questionId;
 		// New answer and hence id is -1
@@ -84,10 +77,13 @@ function Question(data) {
 	}
 
 	self.handleAnsReply = function(status) {
+		if(status === 'Success'){
 		alert("Your answer has been saved successfully:" + status);
 		expertAns.answerDate = getTimeAgo(expertAns.answerDate);
 		self.answersList.push(expertAns);
 		self.expertAnswer('');
+	}
+		else alert ("Error while sending answer :" +status);
 	}
 };
 
@@ -136,6 +132,23 @@ function getTimeAgo(varDate) {
 
 var expName, expId, expLogin;
 
+function validateAndLoad() {
+	if (setSession) {
+		console.log("id :" + getExpId() + " login id :" + getExpLoginId());
+		console.log("Calling setSession");
+		setSession();
+		console.log("id :" + getExpId() + " login id :" + getExpLoginId());
+
+	}
+	if (getExpId() != 0 || getExpLoginId() != "guest"
+			|| getExpName() != "Guest") {
+		loadAllQuestions();
+	} else {
+		console.log("befor perform logout");
+		performLogOut();
+
+	}
+}
 
 function loadAllQuestions() {
 	 var quesUrl = Constants.QuestionURL + "allQuestions";
@@ -199,6 +212,18 @@ function showQuestions(dbData) {
 			self.questionsList(mappedPosts);
 		});
 	}
+	
+	self.getMyReplies = function(){
+		var quesUrl = Constants.QuestionURL + "myAnsweredQues";//current expert replied question
+		console.log("unAnswered filter clicked" + quesUrl);
+		for(;self.questionsList.pop(););
+		$.get(quesUrl, function(newList){
+			var mappedPosts = $.map(newList, function(item) {
+				return new Question(item);
+			});
+			self.questionsList(mappedPosts);
+		});
+		}
 
 };
 
@@ -225,6 +250,15 @@ ko.bindingHandlers.maxLength = {
             }
         }
     }
+function performLogOut(){
+	console.log("inside performLogOut")
+	setExpId(0);
+	setExpName('guest');
+	setExpLoginId('Guest');
+	var url = window.location.origin+"/expertlogin.html";
+	console.log("Redirect url:"+url);
+	window.location.assign(url);
+}
 
 
 

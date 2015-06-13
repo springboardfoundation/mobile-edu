@@ -20,6 +20,11 @@ public interface QuestionManagerService {
 	 * get All unanswered messages(queries)from DB to the UI
 	 */
 	public List<Question> getUnAnsweredQuestions() throws MobileEduException;
+	/**
+	 * get All current expert's answered messages(queries)from DB to the UI
+	 */
+	public List<Question> getMyAnsweredQuestions() throws MobileEduException;
+
 
 	/**
 	 * get these many number of unanswered messages(queries)from DB to the UI
