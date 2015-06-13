@@ -11,6 +11,7 @@ import org.freesource.mobedu.dao.model.Message;
 import org.freesource.mobedu.utils.Constants;
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +50,8 @@ public class MessageDAOImpl implements MessageDAO, Constants {
 	public List<Message> getAllQuestions() {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Message.class);
 		criteria.add(Restrictions.eq("msgType", false));
+		criteria.addOrder(Order.desc("messageId"));
+
 		List list = criteria.list();
 		if (list.size() == 0) {
 			return null;
@@ -77,6 +80,7 @@ public class MessageDAOImpl implements MessageDAO, Constants {
 		// creates a query condition
 		Criteria query = sessionFactory.getCurrentSession().createCriteria(Message.class)
 				.add(Restrictions.eq("msgType", false));
+		query.addOrder(Order.desc("messageId"));
 		// this statement executes query returns value
 		List list = query.list();
 		if (list.size() == 0) {
@@ -89,6 +93,8 @@ public class MessageDAOImpl implements MessageDAO, Constants {
 	public List<Message> getUnAnsweredQ() {
 		Criteria query = sessionFactory.getCurrentSession().createCriteria(Message.class)
 				.add(Restrictions.eq("msgType", false)).add(Restrictions.eq("active", true));
+		query.addOrder(Order.desc("messageId"));
+
 		List list = query.list();
 		if (list.size() == 0) {
 			return null;
@@ -100,6 +106,8 @@ public class MessageDAOImpl implements MessageDAO, Constants {
 	public List<Message> getAnsweredQ() {
 		Criteria query = sessionFactory.getCurrentSession().createCriteria(Message.class)
 				.add(Restrictions.eq("msgType", false)).add(Restrictions.eq("active", false));
+		query.addOrder(Order.desc("messageId"));
+
 		List list = query.list();
 		if (list.size() == 0) {
 			return null;
