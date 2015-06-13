@@ -27,3 +27,15 @@ function setExpLoginId(loginId) {
 function setExpId(id) {
 	exp_id = id;
 }
+
+function getExpName() {
+	return exp_name;
+}
+
+function getExpLoginId() {
+	return exp_loginId;
+}
+
+function getExpId() {
+	return exp_id;
+}
